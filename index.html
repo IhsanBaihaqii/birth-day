@@ -1,783 +1,869 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎂 Birthday</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
-  <style>
-    /* ===== FLAT LIGHT THEME (no gradients, solid colors) ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      /* flat solid palette — soft light background, no transparency layers */
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --card-border: #d9e1ec;
-      --accent-gold: #f4b942;      /* solid gold */
-      --accent-rose: #e86b7b;       /* solid rose */
-      --accent-cyan: #2b9c9c;       /* solid teal/cyan */
-      --text-primary: #1e2b3a;
-      --text-secondary: #4f5d73;
-      --text-muted: #7b8ba0;
-      --rank-bg: #eaeef3;
-      --pill-bg: #e1f0f0;
-      --border-light: #d0dbe8;
-      --highlight-bg: #fff2dd;      /* for today soft bg */
-      --shadow: 0 6px 14px rgba(0, 10, 20, 0.05);
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text-primary);
-      min-height: 100vh;
-      transition: background 0.2s;
-    }
-
-    /* simple star-like dots only, very faint */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: 
-        radial-gradient(1.5px 1.5px at 18% 32%, #a0b8d0 15%, transparent 80%),
-        radial-gradient(1.2px 1.2px at 73% 56%, #b7cadf 15%, transparent 80%),
-        radial-gradient(1px 1px at 40% 85%, #c0d0e0 20%, transparent 90%);
-      opacity: 0.3;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    header {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 2.2rem 1.5rem 1.5rem;
-    }
-
-    header h1 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: clamp(2.2rem, 6vw, 3.8rem);
-      color: #1e3b4f;               /* flat deep blue */
-      letter-spacing: -1px;
-      background: none;             /* removed gradient */
-      -webkit-text-fill-color: initial;
-      background-clip: unset;
-      line-height: 1.2;
-    }
-
-    header p {
-      color: var(--text-secondary);
-      margin-top: 0.6rem;
-      font-size: 0.95rem;
-    }
-
-    .today-badge {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.4rem 1.2rem;
-      border-radius: 30px;
-      background: #e3ecf5;          /* flat soft blue */
-      color: #1f4a6e;
-      font-weight: 500;
-      font-size: 0.8rem;
-      border: 1px solid #b9cfec;
-      text-transform: uppercase;
-    }
-
-    .container {
-      position: relative;
-      z-index: 2;
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 1.2rem 1rem 4rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-    }
-
-    /* ===== CARD flat style ===== */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 1.2rem 1.6rem;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 1.2rem;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: all 0.2s ease;
-      animation: slideUp 0.35s ease backwards;
-      position: relative;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: #c0d0e6;
-      box-shadow: 0 12px 24px rgba(0,20,30,0.08);
-    }
-
-    .card.today {
-      background: #fff9ef;            /* flat cream */
-      border-left: 6px solid var(--accent-gold);
-      border-radius: 24px 24px 24px 24px;
-    }
-
-    .card.soon {
-      border-left: 4px solid var(--accent-rose);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* rank circle — solid */
-    .rank {
-      width: 2.8rem;
-      height: 2.8rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 1.1rem;
-      background: var(--rank-bg);
-      color: #235278;
-      border: 1px solid #b9cee8;
-      flex-shrink: 0;
-    }
-
-    .card.today .rank {
-      background: var(--accent-gold);
-      color: #2b2b2b;
-      border: none;
-      font-size: 1.5rem;
-    }
-
-    .info {
-      min-width: 0;
-    }
-
-    .name {
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #1d3647;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem 1rem;
-      margin-top: 0.25rem;
-    }
-
-    .meta span {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .meta span.highlight {
-      color: var(--accent-cyan);
-      font-weight: 500;
-    }
-
-    .pill-day {
-      display: inline-block;
-      background: var(--pill-bg);
-      color: #1c6d6d;
-      border: 1px solid #b2d8d8;
-      border-radius: 30px;
-      padding: 0.2rem 0.9rem;
-      font-size: 0.7rem;
-      font-weight: 500;
-      margin-top: 0.35rem;
-    }
-
-    .card.today .pill-day {
-      background: #ffeed0;
-      border-color: var(--accent-gold);
-      color: #8a6300;
-    }
-
-    .live-timer {
-      font-size: 0.7rem;
-      color: var(--accent-rose);
-      margin-top: 0.4rem;
-      font-weight: 500;
-      font-variant-numeric: tabular-nums;
-      min-height: 1.4rem;
-    }
-
-    .card.today .live-timer {
-      color: #b4682d;
-      font-weight: 600;
-    }
-
-    .countdown {
-      text-align: center;
-      min-width: 75px;
-    }
-
-    .days-num {
-      font-family: 'Inter', sans-serif;
-      font-weight: 800;
-      font-size: 2.2rem;
-      line-height: 1;
-      color: #1f5f8f;               /* solid flat blue */
-    }
-
-    .card.today .days-num {
-      color: #c9822b;                /* solid goldish */
-      font-size: 1.9rem;
-    }
-
-    .days-label {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04rem;
-      margin-top: 0.15rem;
-    }
-
-    /* progress bar flat */
-    .progress-wrap {
-      margin-top: 0.7rem;
-      height: 4px;
-      background: #e2e9f0;
-      border-radius: 3px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: #3f9eb5;           /* solid cyan */
-      border-radius: 3px;
-    }
-
-    .card.today .progress-bar {
-      background: #f0b347;
-    }
-
-    .confetti-row {
-      font-size: 1.3rem;
-      letter-spacing: 0.2rem;
-      margin-top: 0.3rem;
-      animation: bounce 1.2s infinite alternate;
-    }
-
-    @keyframes bounce {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-3px); }
-    }
-
-    /* ===== MODAL flat, no blur ===== */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(10, 25, 40, 0.5); /* flat semi-transparent */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal {
-      background: #ffffff;
-      border-radius: 32px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 40px rgba(0, 15, 30, 0.15);
-      transform: scale(0.96) translateY(10px);
-      transition: transform 0.25s ease-out;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 1px solid #cfddee;
-    }
-
-    .modal-overlay.open .modal {
-      transform: scale(1) translateY(0);
-    }
-
-    /* modal header flat */
-    .modal-header {
-      padding: 2rem 1.8rem 1.2rem;
-      text-align: center;
-      background: #f9fcff;
-      border-bottom: 1px solid #dbe6f0;
-    }
-
-    .modal-header.is-today {
-      background: #fff6e6;
-    }
-
-    .modal-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      font-size: 2.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      background: #e1eefc;
-      border: 2px solid #b6d2ed;
-    }
-
-    .modal-header.is-today .modal-avatar {
-      background: #ffeac2;
-      border-color: #eab558;
-    }
-
-    .modal-name {
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: #11354e;
-    }
-
-    .modal-status {
-      margin-top: 0.4rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
-
-    .modal-status.celebrating {
-      color: #d2842b;
-      font-weight: 600;
-    }
-
-    /* timer boxes flat */
-    .modal-timer-section {
-      padding: 1.2rem 1.8rem 1.2rem;
-      background: #ffffff;
-      border-bottom: 1px solid #e0ecf5;
-    }
-
-    .modal-timer-label {
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 0.7rem;
-    }
-
-    .modal-timer-row {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .timer-box {
-      flex: 1;
-      max-width: 75px;
-      background: #f2f7fd;
-      border: 1px solid #cbdae9;
-      border-radius: 16px;
-      padding: 0.8rem 0.2rem;
-      text-align: center;
-    }
-
-    .timer-box .val {
-      font-weight: 800;
-      font-size: 1.8rem;
-      color: #1b5f8c;               /* solid flat */
-      line-height: 1;
-    }
-
-    .is-today-timer .timer-box .val {
-      color: #d68d34;
-    }
-
-    .timer-box .lbl {
-      font-size: 0.6rem;
-      color: #7e95aa;
-      text-transform: uppercase;
-      margin-top: 0.2rem;
-    }
-
-    .modal-details {
-      padding: 1rem 1.8rem 2rem;
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.7rem 0;
-      border-bottom: 1px solid #e6eef8;
-    }
-
-    .detail-row:last-child {
-      border-bottom: none;
-    }
-
-    .detail-label {
-      font-size: 0.8rem;
-      color: #617e9a;
-    }
-
-    .detail-value {
-      font-weight: 500;
-      font-size: 0.9rem;
-      color: #1f3f57;
-      text-align: right;
-      max-width: 60%;
-    }
-
-    .detail-value.accent {
-      color: #c97d2b;
-    }
-
-    .detail-value.rose {
-      color: #ca5c6c;
-    }
-
-    .detail-value.cyan {
-      color: #1d8383;
-    }
-
-    /* zodiac badge clickable */
-    .zodiac-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      background: #e4f0f5;
-      color: #166b7a;
-      border: 1px solid #b1d7e8;
-      border-radius: 40px;
-      padding: 0.2rem 0.9rem;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-
-    .zodiac-badge:hover {
-      background: #cbe6f0;
-    }
-
-    .modal-close {
-      position: sticky;
-      top: 0.5rem;
-      left: calc(100% - 3rem);
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #eef3f9;
-      border: 1px solid #c6d8ec;
-      color: #3e617c;
-      font-size: 1rem;
-      font-weight: 400;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: auto;
-      margin-right: 1rem;
-      z-index: 10;
-    }
-
-    .modal-close:hover {
-      background: #d4e2f0;
-      color: #032436;
-    }
-
-    /* responsive */
-    @media (max-width: 500px) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎂 Birthday</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== FLAT LIGHT THEME (no gradients, solid colors) ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        /* flat solid palette — soft light background, no transparency layers */
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --card-border: #d9e1ec;
+        --accent-gold: #f4b942; /* solid gold */
+        --accent-rose: #e86b7b; /* solid rose */
+        --accent-cyan: #2b9c9c; /* solid teal/cyan */
+        --text-primary: #1e2b3a;
+        --text-secondary: #4f5d73;
+        --text-muted: #7b8ba0;
+        --rank-bg: #eaeef3;
+        --pill-bg: #e1f0f0;
+        --border-light: #d0dbe8;
+        --highlight-bg: #fff2dd; /* for today soft bg */
+        --shadow: 0 6px 14px rgba(0, 10, 20, 0.05);
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
+        min-height: 100vh;
+        transition: background 0.2s;
+      }
+
+      /* simple star-like dots only, very faint */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(1.5px 1.5px at 18% 32%, #a0b8d0 15%, transparent 80%),
+          radial-gradient(1.2px 1.2px at 73% 56%, #b7cadf 15%, transparent 80%),
+          radial-gradient(1px 1px at 40% 85%, #c0d0e0 20%, transparent 90%);
+        opacity: 0.3;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      header {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 2.2rem 1.5rem 1.5rem;
+      }
+
+      header h1 {
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2.2rem, 6vw, 3.8rem);
+        color: #1e3b4f; /* flat deep blue */
+        letter-spacing: -1px;
+        background: none; /* removed gradient */
+        -webkit-text-fill-color: initial;
+        background-clip: unset;
+        line-height: 1.2;
+      }
+
+      header p {
+        color: var(--text-secondary);
+        margin-top: 0.6rem;
+        font-size: 0.95rem;
+      }
+
+      .today-badge {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.4rem 1.2rem;
+        border-radius: 30px;
+        background: #e3ecf5; /* flat soft blue */
+        color: #1f4a6e;
+        font-weight: 500;
+        font-size: 0.8rem;
+        border: 1px solid #b9cfec;
+        text-transform: uppercase;
+      }
+
+      .container {
+        position: relative;
+        z-index: 2;
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 1.2rem 1rem 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      /* ===== CARD flat style ===== */
       .card {
-        grid-template-columns: auto 1fr;
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 1.2rem 1.6rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1.2rem;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: all 0.2s ease;
+        animation: slideUp 0.35s ease backwards;
+        position: relative;
       }
-      .countdown {
-        display: none;
+
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: #c0d0e6;
+        box-shadow: 0 12px 24px rgba(0, 20, 30, 0.08);
       }
-      .modal-timer-row {
-        gap: 0.3rem;
+
+      .card.today {
+        background: #fff9ef; /* flat cream */
+        border-left: 6px solid var(--accent-gold);
+        border-radius: 24px 24px 24px 24px;
       }
-      .timer-box .val {
+
+      .card.soon {
+        border-left: 4px solid var(--accent-rose);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* rank circle — solid */
+      .rank {
+        width: 2.8rem;
+        height: 2.8rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        background: var(--rank-bg);
+        color: #235278;
+        border: 1px solid #b9cee8;
+        flex-shrink: 0;
+      }
+
+      .card.today .rank {
+        background: var(--accent-gold);
+        color: #2b2b2b;
+        border: none;
         font-size: 1.5rem;
       }
-    }
-  </style>
-</head>
-<body>
 
-<header>
-  <h1>🎂 Birthday Countdown</h1>
-  <p>flat & light · klik kartu untuk detail</p>
-  <div class="today-badge" id="todayLabel">—</div>
-</header>
+      .info {
+        min-width: 0;
+      }
 
-<div class="container" id="cards"></div>
+      .name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #1d3647;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-<!-- MODAL UTAMA -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
-  <div class="modal" id="modal">
-    <button class="modal-close" onclick="closeModalDirect()">✕</button>
-    <div class="modal-header" id="mHeader">
-      <div class="modal-avatar" id="mAvatar">🎂</div>
-      <div class="modal-name" id="mName">—</div>
-      <div class="modal-status" id="mStatus">—</div>
-    </div>
-    <div class="modal-timer-section" id="mTimerSection">
-      <div class="modal-timer-label" id="mTimerLabel">Hitung Mundur</div>
-      <div class="modal-timer-row" id="mTimerRow">
-        <div class="timer-box"><div class="val" id="tDays">00</div><div class="lbl">Hari</div></div>
-        <div class="timer-box"><div class="val" id="tHours">00</div><div class="lbl">Jam</div></div>
-        <div class="timer-box"><div class="val" id="tMins">00</div><div class="lbl">Menit</div></div>
-        <div class="timer-box"><div class="val" id="tSecs">00</div><div class="lbl">Detik</div></div>
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 1rem;
+        margin-top: 0.25rem;
+      }
+
+      .meta span {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .meta span.highlight {
+        color: var(--accent-cyan);
+        font-weight: 500;
+      }
+
+      .pill-day {
+        display: inline-block;
+        background: var(--pill-bg);
+        color: #1c6d6d;
+        border: 1px solid #b2d8d8;
+        border-radius: 30px;
+        padding: 0.2rem 0.9rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        margin-top: 0.35rem;
+      }
+
+      .card.today .pill-day {
+        background: #ffeed0;
+        border-color: var(--accent-gold);
+        color: #8a6300;
+      }
+
+      .live-timer {
+        font-size: 0.7rem;
+        color: var(--accent-rose);
+        margin-top: 0.4rem;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+        min-height: 1.4rem;
+      }
+
+      .card.today .live-timer {
+        color: #b4682d;
+        font-weight: 600;
+      }
+
+      .countdown {
+        text-align: center;
+        min-width: 75px;
+      }
+
+      .days-num {
+        font-family: "Inter", sans-serif;
+        font-weight: 800;
+        font-size: 2.2rem;
+        line-height: 1;
+        color: #1f5f8f; /* solid flat blue */
+      }
+
+      .card.today .days-num {
+        color: #c9822b; /* solid goldish */
+        font-size: 1.9rem;
+      }
+
+      .days-label {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04rem;
+        margin-top: 0.15rem;
+      }
+
+      /* progress bar flat */
+      .progress-wrap {
+        margin-top: 0.7rem;
+        height: 4px;
+        background: #e2e9f0;
+        border-radius: 3px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: #3f9eb5; /* solid cyan */
+        border-radius: 3px;
+      }
+
+      .card.today .progress-bar {
+        background: #f0b347;
+      }
+
+      .confetti-row {
+        font-size: 1.3rem;
+        letter-spacing: 0.2rem;
+        margin-top: 0.3rem;
+        animation: bounce 1.2s infinite alternate;
+      }
+
+      @keyframes bounce {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-3px);
+        }
+      }
+
+      /* ===== MODAL flat, no blur ===== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        background: rgba(10, 25, 40, 0.5); /* flat semi-transparent */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: #ffffff;
+        border-radius: 32px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 20px 40px rgba(0, 15, 30, 0.15);
+        transform: scale(0.96) translateY(10px);
+        transition: transform 0.25s ease-out;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 1px solid #cfddee;
+      }
+
+      .modal-overlay.open .modal {
+        transform: scale(1) translateY(0);
+      }
+
+      /* modal header flat */
+      .modal-header {
+        padding: 2rem 1.8rem 1.2rem;
+        text-align: center;
+        background: #f9fcff;
+        border-bottom: 1px solid #dbe6f0;
+      }
+
+      .modal-header.is-today {
+        background: #fff6e6;
+      }
+
+      .modal-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        font-size: 2.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        background: #e1eefc;
+        border: 2px solid #b6d2ed;
+      }
+
+      .modal-header.is-today .modal-avatar {
+        background: #ffeac2;
+        border-color: #eab558;
+      }
+
+      .modal-name {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #11354e;
+      }
+
+      .modal-status {
+        margin-top: 0.4rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      .modal-status.celebrating {
+        color: #d2842b;
+        font-weight: 600;
+      }
+
+      /* timer boxes flat */
+      .modal-timer-section {
+        padding: 1.2rem 1.8rem 1.2rem;
+        background: #ffffff;
+        border-bottom: 1px solid #e0ecf5;
+      }
+
+      .modal-timer-label {
+        text-align: center;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 0.7rem;
+      }
+
+      .modal-timer-row {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .timer-box {
+        flex: 1;
+        max-width: 75px;
+        background: #f2f7fd;
+        border: 1px solid #cbdae9;
+        border-radius: 16px;
+        padding: 0.8rem 0.2rem;
+        text-align: center;
+      }
+
+      .timer-box .val {
+        font-weight: 800;
+        font-size: 1.8rem;
+        color: #1b5f8c; /* solid flat */
+        line-height: 1;
+      }
+
+      .is-today-timer .timer-box .val {
+        color: #d68d34;
+      }
+
+      .timer-box .lbl {
+        font-size: 0.6rem;
+        color: #7e95aa;
+        text-transform: uppercase;
+        margin-top: 0.2rem;
+      }
+
+      .modal-details {
+        padding: 1rem 1.8rem 2rem;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid #e6eef8;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        font-size: 0.8rem;
+        color: #617e9a;
+      }
+
+      .detail-value {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: #1f3f57;
+        text-align: right;
+        max-width: 60%;
+      }
+
+      .detail-value.accent {
+        color: #c97d2b;
+      }
+
+      .detail-value.rose {
+        color: #ca5c6c;
+      }
+
+      .detail-value.cyan {
+        color: #1d8383;
+      }
+
+      /* zodiac badge clickable */
+      .zodiac-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: #e4f0f5;
+        color: #166b7a;
+        border: 1px solid #b1d7e8;
+        border-radius: 40px;
+        padding: 0.2rem 0.9rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+
+      .zodiac-badge:hover {
+        background: #cbe6f0;
+      }
+
+      .modal-close {
+        position: sticky;
+        top: 0.5rem;
+        left: calc(100% - 3rem);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #eef3f9;
+        border: 1px solid #c6d8ec;
+        color: #3e617c;
+        font-size: 1rem;
+        font-weight: 400;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: 1rem;
+        z-index: 10;
+      }
+
+      .modal-close:hover {
+        background: #d4e2f0;
+        color: #032436;
+      }
+
+      /* responsive */
+      @media (max-width: 500px) {
+        .card {
+          grid-template-columns: auto 1fr;
+        }
+        .countdown {
+          display: none;
+        }
+        .modal-timer-row {
+          gap: 0.3rem;
+        }
+        .timer-box .val {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🎂 Birthday Countdown</h1>
+      <p>flat & light · klik kartu untuk detail</p>
+      <div class="today-badge" id="todayLabel">—</div>
+    </header>
+
+    <div class="container" id="cards"></div>
+
+    <!-- MODAL UTAMA -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+      <div class="modal" id="modal">
+        <button class="modal-close" onclick="closeModalDirect()">✕</button>
+        <div class="modal-header" id="mHeader">
+          <div class="modal-avatar" id="mAvatar">🎂</div>
+          <div class="modal-name" id="mName">—</div>
+          <div class="modal-status" id="mStatus">—</div>
+        </div>
+        <div class="modal-timer-section" id="mTimerSection">
+          <div class="modal-timer-label" id="mTimerLabel">Hitung Mundur</div>
+          <div class="modal-timer-row" id="mTimerRow">
+            <div class="timer-box">
+              <div class="val" id="tDays">00</div>
+              <div class="lbl">Hari</div>
+            </div>
+            <div class="timer-box">
+              <div class="val" id="tHours">00</div>
+              <div class="lbl">Jam</div>
+            </div>
+            <div class="timer-box">
+              <div class="val" id="tMins">00</div>
+              <div class="lbl">Menit</div>
+            </div>
+            <div class="timer-box">
+              <div class="val" id="tSecs">00</div>
+              <div class="lbl">Detik</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-details" id="mDetails"></div>
       </div>
     </div>
-    <div class="modal-details" id="mDetails"></div>
-  </div>
-</div>
 
-<!-- MODAL ZODIAK (flat & lebih rapi) -->
-<div class="modal-overlay" id="zodiacOverlay" onclick="closeZodiacBg(event)">
-  <div class="modal" style="max-width: 400px;">
-    <button class="modal-close" onclick="closeZodiac()">✕</button>
-    <div class="modal-header">
-      <div class="modal-avatar" id="zAvatar">♈</div>
-      <div class="modal-name" id="zName">Aries</div>
-      <div class="modal-status" id="zElement">Elemen Api</div>
+    <!-- MODAL ZODIAK (flat & lebih rapi) -->
+    <div
+      class="modal-overlay"
+      id="zodiacOverlay"
+      onclick="closeZodiacBg(event)"
+    >
+      <div class="modal" style="max-width: 400px">
+        <button class="modal-close" onclick="closeZodiac()">✕</button>
+        <div class="modal-header">
+          <div class="modal-avatar" id="zAvatar">♈</div>
+          <div class="modal-name" id="zName">Aries</div>
+          <div class="modal-status" id="zElement">Elemen Api</div>
+        </div>
+        <div class="modal-details" id="zDetails">
+          <!-- diisi javascript -->
+        </div>
+      </div>
     </div>
-    <div class="modal-details" id="zDetails">
-      <!-- diisi javascript -->
-    </div>
-  </div>
-</div>
 
-<script>
-  (function() {
-    // ===== DATA TETAP =====
-    const RAW = [
-  {name: "Ihsan Baihaqi",      hbd: "04,03,2006"},
-  {name: "Fahriza Agustiawan", hbd: "28,08,2008"},
-  {name: "Ahmad Faris",        hbd: "22,07,2015"},
-  {name: "Hairul Mahesa",      hbd: "29,05,2004"},
-  {name: "Fauzi Hendrawan",    hbd: "30,03,2004"},
-  {name: "Arya Mardana",       hbd: "08,08,2005"},
-];
+    <script>
+      (function () {
+        // ===== DATA TETAP =====
+        const RAW = [
+          { name: "Azura Nasya", hbd: "01,02,2006" },
+          { name: "Bulan Febiola", hbd: "27,02,2005" },
+          { name: "Siti Zahra", hbd: "03,03,2006" },
+          { name: "Ihsan Baihaqi", hbd: "04,03,2006" },
+          { name: "Hairul Mahesa", hbd: "29,05,2004" },
+          { name: "Fauzi Hendrawan", hbd: "30,03,2004" },
+        ];
 
-    const DAYS_ID   = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-    const MONTHS_ID = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+        const DAYS_ID = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        const MONTHS_ID = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
 
-    const ZODIAC = [
-      {name:"Capricorn",sym:"♑",end:[1,19]},{name:"Aquarius",sym:"♒",end:[2,18]},
-      {name:"Pisces",sym:"♓",end:[3,20]},{name:"Aries",sym:"♈",end:[4,19]},
-      {name:"Taurus",sym:"♉",end:[5,20]},{name:"Gemini",sym:"♊",end:[6,20]},
-      {name:"Cancer",sym:"♋",end:[7,22]},{name:"Leo",sym:"♌",end:[8,22]},
-      {name:"Virgo",sym:"♍",end:[9,22]},{name:"Libra",sym:"♎",end:[10,22]},
-      {name:"Scorpio",sym:"♏",end:[11,21]},{name:"Sagittarius",sym:"♐",end:[12,21]},
-    ];
+        const ZODIAC = [
+          { name: "Capricorn", sym: "♑", end: [1, 19] },
+          { name: "Aquarius", sym: "♒", end: [2, 18] },
+          { name: "Pisces", sym: "♓", end: [3, 20] },
+          { name: "Aries", sym: "♈", end: [4, 19] },
+          { name: "Taurus", sym: "♉", end: [5, 20] },
+          { name: "Gemini", sym: "♊", end: [6, 20] },
+          { name: "Cancer", sym: "♋", end: [7, 22] },
+          { name: "Leo", sym: "♌", end: [8, 22] },
+          { name: "Virgo", sym: "♍", end: [9, 22] },
+          { name: "Libra", sym: "♎", end: [10, 22] },
+          { name: "Scorpio", sym: "♏", end: [11, 21] },
+          { name: "Sagittarius", sym: "♐", end: [12, 21] },
+        ];
 
-    const ZODIAC_DETAIL = {
-  Capricorn: { 
-    element: "Tanah", 
-    sifat: "Disiplin, ambisius, realistis", 
-    kelemahan: "Kaku, terlalu serius", 
-    cocok: "Taurus, Virgo, Scorpio", 
-    deskripsi: "Capricorn pekerja keras, fokus pada tujuan, dan memiliki tekad kuat." 
-  },
-  Aquarius: { 
-    element: "Udara", 
-    sifat: "Inovatif, unik, mandiri", 
-    kelemahan: "Dingin, sulit ditebak", 
-    cocok: "Gemini, Libra, Sagittarius", 
-    deskripsi: "Aquarius adalah pemikir bebas dengan ide-ide luar biasa dan pandangan luas." 
-  },
-  Pisces: { 
-    element: "Air", 
-    sifat: "Empatik, imajinatif, lembut", 
-    kelemahan: "Terlalu sensitif, mudah melarikan diri dari kenyataan", 
-    cocok: "Cancer, Scorpio", 
-    deskripsi: "Pisces sangat perasa, penuh intuisi, dan memiliki imajinasi yang kaya." 
-  },
-  Aries: { 
-    element: "Api", 
-    sifat: "Berani, energik, percaya diri", 
-    kelemahan: "Impulsif, mudah marah", 
-    cocok: "Leo, Sagittarius", 
-    deskripsi: "Aries adalah pemimpin alami yang penuh semangat dan keberanian." 
-  },
-  Taurus: { 
-    element: "Tanah", 
-    sifat: "Setia, sabar, stabil", 
-    kelemahan: "Keras kepala, materialistis", 
-    cocok: "Virgo, Capricorn", 
-    deskripsi: "Taurus mencintai kenyamanan, keindahan, dan kestabilan hidup." 
-  },
-  Gemini: { 
-    element: "Udara", 
-    sifat: "Cerdas, komunikatif, adaptif", 
-    kelemahan: "Mudah bosan, tidak konsisten", 
-    cocok: "Libra, Aquarius", 
-    deskripsi: "Gemini penuh ide, suka berbicara, dan cepat beradaptasi." 
-  },
-  Cancer: { 
-    element: "Air", 
-    sifat: "Peduli, protektif, intuitif", 
-    kelemahan: "Moody, terlalu sensitif", 
-    cocok: "Pisces, Scorpio", 
-    deskripsi: "Cancer mengutamakan keluarga, penuh kasih sayang, dan sangat protektif." 
-  },
-  Leo: { 
-    element: "Api", 
-    sifat: "Karismatik, percaya diri, kreatif", 
-    kelemahan: "Egois, haus perhatian", 
-    cocok: "Aries, Sagittarius", 
-    deskripsi: "Leo suka menjadi pusat perhatian dan memiliki jiwa kepemimpinan." 
-  },
-  Virgo: { 
-    element: "Tanah", 
-    sifat: "Perfeksionis, teliti, analitis", 
-    kelemahan: "Terlalu kritis, mudah cemas", 
-    cocok: "Taurus, Capricorn", 
-    deskripsi: "Virgo sangat analitis, detail, dan selalu mencari kesempurnaan." 
-  },
-  Libra: { 
-    element: "Udara", 
-    sifat: "Adil, romantis, harmonis", 
-    kelemahan: "Sulit mengambil keputusan, mudah dipengaruhi", 
-    cocok: "Gemini, Aquarius", 
-    deskripsi: "Libra menyukai keindahan, keseimbangan, dan hubungan yang harmonis." 
-  },
-  Scorpio: { 
-    element: "Air", 
-    sifat: "Misterius, intens, penuh gairah", 
-    kelemahan: "Cemburuan, posesif", 
-    cocok: "Cancer, Pisces", 
-    deskripsi: "Scorpio memiliki energi emosional yang kuat dan penuh misteri." 
-  },
-  Sagittarius: { 
-    element: "Api", 
-    sifat: "Optimis, petualang, jujur", 
-    kelemahan: "Blak-blakan, tidak sabar", 
-    cocok: "Aries, Leo", 
-    deskripsi: "Sagittarius mencintai kebebasan, eksplorasi, dan pengalaman baru." 
-  }
-};
+        const ZODIAC_DETAIL = {
+          Capricorn: {
+            element: "Tanah",
+            sifat: "Disiplin, ambisius, realistis",
+            kelemahan: "Kaku, terlalu serius",
+            cocok: "Taurus, Virgo, Scorpio",
+            deskripsi:
+              "Capricorn pekerja keras, fokus pada tujuan, dan memiliki tekad kuat.",
+          },
+          Aquarius: {
+            element: "Udara",
+            sifat: "Inovatif, unik, mandiri",
+            kelemahan: "Dingin, sulit ditebak",
+            cocok: "Gemini, Libra, Sagittarius",
+            deskripsi:
+              "Aquarius adalah pemikir bebas dengan ide-ide luar biasa dan pandangan luas.",
+          },
+          Pisces: {
+            element: "Air",
+            sifat: "Empatik, imajinatif, lembut",
+            kelemahan: "Terlalu sensitif, mudah melarikan diri dari kenyataan",
+            cocok: "Cancer, Scorpio",
+            deskripsi:
+              "Pisces sangat perasa, penuh intuisi, dan memiliki imajinasi yang kaya.",
+          },
+          Aries: {
+            element: "Api",
+            sifat: "Berani, energik, percaya diri",
+            kelemahan: "Impulsif, mudah marah",
+            cocok: "Leo, Sagittarius",
+            deskripsi:
+              "Aries adalah pemimpin alami yang penuh semangat dan keberanian.",
+          },
+          Taurus: {
+            element: "Tanah",
+            sifat: "Setia, sabar, stabil",
+            kelemahan: "Keras kepala, materialistis",
+            cocok: "Virgo, Capricorn",
+            deskripsi:
+              "Taurus mencintai kenyamanan, keindahan, dan kestabilan hidup.",
+          },
+          Gemini: {
+            element: "Udara",
+            sifat: "Cerdas, komunikatif, adaptif",
+            kelemahan: "Mudah bosan, tidak konsisten",
+            cocok: "Libra, Aquarius",
+            deskripsi:
+              "Gemini penuh ide, suka berbicara, dan cepat beradaptasi.",
+          },
+          Cancer: {
+            element: "Air",
+            sifat: "Peduli, protektif, intuitif",
+            kelemahan: "Moody, terlalu sensitif",
+            cocok: "Pisces, Scorpio",
+            deskripsi:
+              "Cancer mengutamakan keluarga, penuh kasih sayang, dan sangat protektif.",
+          },
+          Leo: {
+            element: "Api",
+            sifat: "Karismatik, percaya diri, kreatif",
+            kelemahan: "Egois, haus perhatian",
+            cocok: "Aries, Sagittarius",
+            deskripsi:
+              "Leo suka menjadi pusat perhatian dan memiliki jiwa kepemimpinan.",
+          },
+          Virgo: {
+            element: "Tanah",
+            sifat: "Perfeksionis, teliti, analitis",
+            kelemahan: "Terlalu kritis, mudah cemas",
+            cocok: "Taurus, Capricorn",
+            deskripsi:
+              "Virgo sangat analitis, detail, dan selalu mencari kesempurnaan.",
+          },
+          Libra: {
+            element: "Udara",
+            sifat: "Adil, romantis, harmonis",
+            kelemahan: "Sulit mengambil keputusan, mudah dipengaruhi",
+            cocok: "Gemini, Aquarius",
+            deskripsi:
+              "Libra menyukai keindahan, keseimbangan, dan hubungan yang harmonis.",
+          },
+          Scorpio: {
+            element: "Air",
+            sifat: "Misterius, intens, penuh gairah",
+            kelemahan: "Cemburuan, posesif",
+            cocok: "Cancer, Pisces",
+            deskripsi:
+              "Scorpio memiliki energi emosional yang kuat dan penuh misteri.",
+          },
+          Sagittarius: {
+            element: "Api",
+            sifat: "Optimis, petualang, jujur",
+            kelemahan: "Blak-blakan, tidak sabar",
+            cocok: "Aries, Leo",
+            deskripsi:
+              "Sagittarius mencintai kebebasan, eksplorasi, dan pengalaman baru.",
+          },
+        };
 
-    // helper
-    function getZodiac(d, m) {
-      for (const z of ZODIAC) {
-        if (m < z.end[0] || (m === z.end[0] && d <= z.end[1])) return z;
-      }
-      return ZODIAC[0];
-    }
+        // helper
+        function getZodiac(d, m) {
+          for (const z of ZODIAC) {
+            if (m < z.end[0] || (m === z.end[0] && d <= z.end[1])) return z;
+          }
+          return ZODIAC[0];
+        }
 
-    function todayDate() {
-      const t = new Date();
-      return new Date(t.getFullYear(), t.getMonth(), t.getDate());
-    }
+        function todayDate() {
+          const t = new Date();
+          return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+        }
 
-    function nextBirthday(d, m) {
-      const now = todayDate();
-      const y = now.getFullYear();
-      let next = new Date(y, m-1, d);
-      if (next < now) next = new Date(y+1, m-1, d);
-      return next;
-    }
+        function nextBirthday(d, m) {
+          const now = todayDate();
+          const y = now.getFullYear();
+          let next = new Date(y, m - 1, d);
+          if (next < now) next = new Date(y + 1, m - 1, d);
+          return next;
+        }
 
-    function daysUntil(d, m) {
-      const now = todayDate();
-      const nb = nextBirthday(d, m);
-      return Math.round((nb - now) / 86400000);
-    }
+        function daysUntil(d, m) {
+          const now = todayDate();
+          const nb = nextBirthday(d, m);
+          return Math.round((nb - now) / 86400000);
+        }
 
-    function calcAge(bY, bM, bD) {
-      const now = todayDate();
-      let age = now.getFullYear() - bY;
-      if (new Date(now.getFullYear(), bM-1, bD) > now) age--;
-      return age;
-    }
+        function calcAge(bY, bM, bD) {
+          const now = todayDate();
+          let age = now.getFullYear() - bY;
+          if (new Date(now.getFullYear(), bM - 1, bD) > now) age--;
+          return age;
+        }
 
-    function pad(n) { return String(n).padStart(2, '0'); }
+        function pad(n) {
+          return String(n).padStart(2, "0");
+        }
 
-    function secsUntilBirthday(d, m) {
-      const now = new Date();
-      const nb = nextBirthday(d, m);
-      const target = new Date(nb.getFullYear(), nb.getMonth(), nb.getDate(), 0, 0, 0, 0);
-      return Math.max(0, Math.floor((target - now) / 1000));
-    }
+        function secsUntilBirthday(d, m) {
+          const now = new Date();
+          const nb = nextBirthday(d, m);
+          const target = new Date(
+            nb.getFullYear(),
+            nb.getMonth(),
+            nb.getDate(),
+            0,
+            0,
+            0,
+            0,
+          );
+          return Math.max(0, Math.floor((target - now) / 1000));
+        }
 
-    function formatSecs(total) {
-      return {
-        d: Math.floor(total / 86400),
-        h: Math.floor((total % 86400) / 3600),
-        m: Math.floor((total % 3600) / 60),
-        s: total % 60
-      };
-    }
+        function formatSecs(total) {
+          return {
+            d: Math.floor(total / 86400),
+            h: Math.floor((total % 86400) / 3600),
+            m: Math.floor((total % 3600) / 60),
+            s: total % 60,
+          };
+        }
 
-    // Badge tanggal hari ini
-    const now = todayDate();
-    document.getElementById('todayLabel').textContent = `Hari ini: ${DAYS_ID[now.getDay()]}, ${now.getDate()} ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()}`;
+        // Badge tanggal hari ini
+        const now = todayDate();
+        document.getElementById("todayLabel").textContent =
+          `Hari ini: ${DAYS_ID[now.getDay()]}, ${now.getDate()} ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()}`;
 
-    // olah data + sorting
-    const data = RAW.map(p => {
-      const [d, m, y] = p.hbd.split(',').map(Number);
-      const days = daysUntil(d, m);
-      const age = calcAge(y, m, d);
-      const nb = nextBirthday(d, m);
-      const isToday = days === 0;
-      const turningAge = isToday ? age : age + 1;
-      const progress = Math.round(((365 - days) / 365) * 100);
-      const zodiac = getZodiac(d, m);
-      return {
-        name: p.name, d, m, y,
-        days, age, turningAge,
-        bdayOfWeek: DAYS_ID[nb.getDay()],
-        isToday, progress, nb, zodiac
-      };
-    }).sort((a, b) => {
-      if (a.days === 0 && b.days === 0) return 0;
-      if (a.days === 0) return -1;
-      if (b.days === 0) return 1;
-      return a.days - b.days;
-    });
+        // olah data + sorting
+        const data = RAW.map((p) => {
+          const [d, m, y] = p.hbd.split(",").map(Number);
+          const days = daysUntil(d, m);
+          const age = calcAge(y, m, d);
+          const nb = nextBirthday(d, m);
+          const isToday = days === 0;
+          const turningAge = isToday ? age : age + 1;
+          const progress = Math.round(((365 - days) / 365) * 100);
+          const zodiac = getZodiac(d, m);
+          return {
+            name: p.name,
+            d,
+            m,
+            y,
+            days,
+            age,
+            turningAge,
+            bdayOfWeek: DAYS_ID[nb.getDay()],
+            isToday,
+            progress,
+            nb,
+            zodiac,
+          };
+        }).sort((a, b) => {
+          if (a.days === 0 && b.days === 0) return 0;
+          if (a.days === 0) return -1;
+          if (b.days === 0) return 1;
+          return a.days - b.days;
+        });
 
-    // render cards
-    const container = document.getElementById('cards');
-    const cardTimerMap = {};
+        // render cards
+        const container = document.getElementById("cards");
+        const cardTimerMap = {};
 
-    data.forEach((p, i) => {
-      const card = document.createElement('div');
-      card.className = `card${p.isToday ? ' today' : (p.days <= 7 ? ' soon' : '')}`;
-      card.style.animationDelay = `${i * 0.07}s`;
+        data.forEach((p, i) => {
+          const card = document.createElement("div");
+          card.className = `card${p.isToday ? " today" : p.days <= 7 ? " soon" : ""}`;
+          card.style.animationDelay = `${i * 0.07}s`;
 
-      const timerId = `ct-${i}`;
-      const bdateStr = `${p.d} ${MONTHS_ID[p.m-1]} ${p.y}`;
+          const timerId = `ct-${i}`;
+          const bdateStr = `${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
 
-      card.innerHTML = `
-        ${p.isToday ? `<div class="rank">🎂</div>` : `<div class="rank">${i+1}</div>`}
+          card.innerHTML = `
+        ${p.isToday ? `<div class="rank">🎂</div>` : `<div class="rank">${i + 1}</div>`}
         <div class="info">
           <div class="name">${p.name}</div>
           <div class="meta">
             <span>📅 ${bdateStr}</span>
-            <span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? '' : ' nanti'}</span>
+            <span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? "" : " nanti"}</span>
           </div>
-          <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? ' ini' : ''}</div>
-          ${p.isToday ? `<div class="confetti-row">🎊🥳🎁🎈🎊</div>` : ''}
-          <div class="live-timer" id="${timerId}">${p.isToday ? '🎉 Selamat Ulang Tahun!' : ''}</div>
+          <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? " ini" : ""}</div>
+          ${p.isToday ? `<div class="confetti-row">🎊🥳🎁🎈🎊</div>` : ""}
+          <div class="live-timer" id="${timerId}">${p.isToday ? "🎉 Selamat Ulang Tahun!" : ""}</div>
           <div class="progress-wrap"><div class="progress-bar" style="width:${p.progress}%"></div></div>
         </div>
         <div class="countdown">
@@ -785,137 +871,156 @@
         </div>
       `;
 
-      card.addEventListener('click', () => openModal(p));
-      container.appendChild(card);
-      if (!p.isToday) cardTimerMap[timerId] = p;
-    });
+          card.addEventListener("click", () => openModal(p));
+          container.appendChild(card);
+          if (!p.isToday) cardTimerMap[timerId] = p;
+        });
 
-    // tick card timers
-    function tickCards() {
-      for (const [id, p] of Object.entries(cardTimerMap)) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const secs = secsUntilBirthday(p.d, p.m);
-        const { d, h, m, s } = formatSecs(secs);
-        if (d >= 2) {
-          el.textContent = `⏳ ${d} hari ${pad(h)}:${pad(m)}:${pad(s)} lagi`;
-        } else if (d === 1) {
-          el.textContent = `⏳ 1 hari ${pad(h)} jam ${pad(m)} menit lagi`;
-        } else {
-          el.textContent = `⏳ ${pad(h)} jam ${pad(m)} menit ${pad(s)} detik lagi`;
+        // tick card timers
+        function tickCards() {
+          for (const [id, p] of Object.entries(cardTimerMap)) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+            const secs = secsUntilBirthday(p.d, p.m);
+            const { d, h, m, s } = formatSecs(secs);
+            if (d >= 2) {
+              el.textContent = `⏳ ${d} hari ${pad(h)}:${pad(m)}:${pad(s)} lagi`;
+            } else if (d === 1) {
+              el.textContent = `⏳ 1 hari ${pad(h)} jam ${pad(m)} menit lagi`;
+            } else {
+              el.textContent = `⏳ ${pad(h)} jam ${pad(m)} menit ${pad(s)} detik lagi`;
+            }
+          }
         }
-      }
-    }
-    setInterval(tickCards, 1000);
-    tickCards();
+        setInterval(tickCards, 1000);
+        tickCards();
 
-    // ===== MODAL UTAMA =====
-    let modalInterval = null;
-    let activeP = null;
+        // ===== MODAL UTAMA =====
+        let modalInterval = null;
+        let activeP = null;
 
-    function openModal(p) {
-      activeP = p;
+        function openModal(p) {
+          activeP = p;
 
-      const overlay = document.getElementById('modalOverlay');
-      const mHeader = document.getElementById('mHeader');
-      const mName   = document.getElementById('mName');
-      const mStatus = document.getElementById('mStatus');
-      const mAvatar = document.getElementById('mAvatar');
-      const mDetails= document.getElementById('mDetails');
-      const mTimerLabel = document.getElementById('mTimerLabel');
-      const mTimerRow   = document.getElementById('mTimerRow');
+          const overlay = document.getElementById("modalOverlay");
+          const mHeader = document.getElementById("mHeader");
+          const mName = document.getElementById("mName");
+          const mStatus = document.getElementById("mStatus");
+          const mAvatar = document.getElementById("mAvatar");
+          const mDetails = document.getElementById("mDetails");
+          const mTimerLabel = document.getElementById("mTimerLabel");
+          const mTimerRow = document.getElementById("mTimerRow");
 
-      mAvatar.textContent = p.isToday ? '🎉' : (p.days <= 7 ? '🎁' : '⏳');
-      mName.textContent   = p.name;
-      mHeader.className   = 'modal-header' + (p.isToday ? ' is-today' : '');
-      mTimerRow.className = 'modal-timer-row' + (p.isToday ? ' is-today-timer' : '');
+          mAvatar.textContent = p.isToday ? "🎉" : p.days <= 7 ? "🎁" : "⏳";
+          mName.textContent = p.name;
+          mHeader.className = "modal-header" + (p.isToday ? " is-today" : "");
+          mTimerRow.className =
+            "modal-timer-row" + (p.isToday ? " is-today-timer" : "");
 
-      if (p.isToday) {
-        mStatus.className = 'modal-status celebrating';
-        mStatus.textContent = '🎉 Selamat Ulang Tahun!';
-        mTimerLabel.textContent = 'Sedang Merayakan 🎂';
-      } else {
-        mStatus.className = 'modal-status';
-        mStatus.textContent = `Menunggu ulang tahun berikutnya`;
-        mTimerLabel.textContent = 'Hitung Mundur';
-      }
+          if (p.isToday) {
+            mStatus.className = "modal-status celebrating";
+            mStatus.textContent = "🎉 Selamat Ulang Tahun!";
+            mTimerLabel.textContent = "Sedang Merayakan 🎂";
+          } else {
+            mStatus.className = "modal-status";
+            mStatus.textContent = `Menunggu ulang tahun berikutnya`;
+            mTimerLabel.textContent = "Hitung Mundur";
+          }
 
-      const bdOW = DAYS_ID[new Date(p.y, p.m-1, p.d).getDay()];
-      const bdateStr  = `${bdOW}, ${p.d} ${MONTHS_ID[p.m-1]} ${p.y}`;
-      const nextYear  = p.nb.getFullYear();
-      const nextStr   = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m-1]} ${nextYear}`;
-      const totalDays = Math.round((todayDate() - new Date(p.y, p.m-1, p.d)) / 86400000);
+          const bdOW = DAYS_ID[new Date(p.y, p.m - 1, p.d).getDay()];
+          const bdateStr = `${bdOW}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
+          const nextYear = p.nb.getFullYear();
+          const nextStr = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m - 1]} ${nextYear}`;
+          const totalDays = Math.round(
+            (todayDate() - new Date(p.y, p.m - 1, p.d)) / 86400000,
+          );
 
-      mDetails.innerHTML = `
+          mDetails.innerHTML = `
         <div class="detail-row"><span class="detail-label">📅 Lahir</span><span class="detail-value">${bdateStr}</span></div>
         <div class="detail-row"><span class="detail-label">👤 Umur</span><span class="detail-value cyan">${p.age} tahun</span></div>
-        <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? ' (hari ini!)' : ''}</span></div>
-        <div class="detail-row"><span class="detail-label">📆 Ulang Tahun jatuh</span><span class="detail-value rose">${p.isToday ? 'HARI INI' : nextStr}</span></div>
-        <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? '—' : p.days}</span></div>
+        <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? " (hari ini!)" : ""}</span></div>
+        <div class="detail-row"><span class="detail-label">📆 Ulang Tahun jatuh</span><span class="detail-value rose">${p.isToday ? "HARI INI" : nextStr}</span></div>
+        <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? "—" : p.days}</span></div>
         <div class="detail-row">
           <span class="detail-label">✨ Zodiak</span>
           <span class="detail-value"><span class="zodiac-badge" onclick="openZodiacModal('${p.zodiac.name}')">${p.zodiac.sym} ${p.zodiac.name}</span></span>
         </div>
-        <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString('id')} hari</span></div>
+        <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString("id")} hari</span></div>
       `;
 
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
+          overlay.classList.add("open");
+          document.body.style.overflow = "hidden";
 
-      function tickModal() {
-        if (!activeP) return;
-        if (activeP.isToday) {
-          ['tDays','tHours','tMins','tSecs'].forEach(id => document.getElementById(id).textContent='00');
-          return;
+          function tickModal() {
+            if (!activeP) return;
+            if (activeP.isToday) {
+              ["tDays", "tHours", "tMins", "tSecs"].forEach(
+                (id) => (document.getElementById(id).textContent = "00"),
+              );
+              return;
+            }
+            const { d, h, m, s } = formatSecs(
+              secsUntilBirthday(activeP.d, activeP.m),
+            );
+            document.getElementById("tDays").textContent = pad(d);
+            document.getElementById("tHours").textContent = pad(h);
+            document.getElementById("tMins").textContent = pad(m);
+            document.getElementById("tSecs").textContent = pad(s);
+          }
+
+          if (modalInterval) clearInterval(modalInterval);
+          tickModal();
+          modalInterval = setInterval(tickModal, 1000);
         }
-        const {d, h, m, s} = formatSecs(secsUntilBirthday(activeP.d, activeP.m));
-        document.getElementById('tDays').textContent = pad(d);
-        document.getElementById('tHours').textContent = pad(h);
-        document.getElementById('tMins').textContent = pad(m);
-        document.getElementById('tSecs').textContent = pad(s);
-      }
 
-      if (modalInterval) clearInterval(modalInterval);
-      tickModal();
-      modalInterval = setInterval(tickModal, 1000);
-    }
+        window.closeModalBg = (e) => {
+          if (e.target === document.getElementById("modalOverlay"))
+            closeModalDirect();
+        };
+        window.closeModalDirect = () => {
+          document.getElementById("modalOverlay").classList.remove("open");
+          document.body.style.overflow = "";
+          if (modalInterval) {
+            clearInterval(modalInterval);
+            modalInterval = null;
+          }
+          activeP = null;
+        };
 
-    window.closeModalBg = (e) => { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); };
-    window.closeModalDirect = () => {
-      document.getElementById('modalOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-      if (modalInterval) { clearInterval(modalInterval); modalInterval = null; }
-      activeP = null;
-    };
+        // ===== ZODIAK MODAL (diperbaiki + lebih detail) =====
+        window.openZodiacModal = (name) => {
+          const data = ZODIAC_DETAIL[name];
+          if (!data) return;
+          const zodiacInfo = ZODIAC.find((z) => z.name === name);
+          if (!zodiacInfo) return;
 
-    // ===== ZODIAK MODAL (diperbaiki + lebih detail) =====
-    window.openZodiacModal = (name) => {
-      const data = ZODIAC_DETAIL[name];
-      if (!data) return;
-      const zodiacInfo = ZODIAC.find(z => z.name === name);
-      if (!zodiacInfo) return;
-
-      document.getElementById('zAvatar').textContent = zodiacInfo.sym;
-      document.getElementById('zName').textContent = name;
-      document.getElementById('zElement').textContent = "Elemen " + data.element;
-      document.getElementById('zDetails').innerHTML = `
+          document.getElementById("zAvatar").textContent = zodiacInfo.sym;
+          document.getElementById("zName").textContent = name;
+          document.getElementById("zElement").textContent =
+            "Elemen " + data.element;
+          document.getElementById("zDetails").innerHTML = `
         <div class="detail-row"><span class="detail-label">🌟 Sifat</span><span class="detail-value">${data.sifat}</span></div>
         <div class="detail-row"><span class="detail-label">⚠️ Kelemahan</span><span class="detail-value rose">${data.kelemahan}</span></div>
         <div class="detail-row"><span class="detail-label">💕 Cocok</span><span class="detail-value zodiac-badge" style="background:#eaf2fa">${data.cocok}</span></div>
         <div class="detail-row"><span class="detail-label">📖 Deskripsi</span><span class="detail-value">${data.deskripsi}</span></div>
       `;
-      document.getElementById('zodiacOverlay').classList.add('open');
-    };
+          document.getElementById("zodiacOverlay").classList.add("open");
+        };
 
-    window.closeZodiac = () => {
-      document.getElementById('zodiacOverlay').classList.remove('open');
-    };
-    window.closeZodiacBg = (e) => {
-      if (e.target.id === "zodiacOverlay") closeZodiac();
-    };
+        window.closeZodiac = () => {
+          document.getElementById("zodiacOverlay").classList.remove("open");
+        };
+        window.closeZodiacBg = (e) => {
+          if (e.target.id === "zodiacOverlay") closeZodiac();
+        };
 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModalDirect(); closeZodiac(); } });
-  })();
-</script>
-</body>
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeModalDirect();
+            closeZodiac();
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>
