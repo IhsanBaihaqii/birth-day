@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎂 Birthday</title>
+    <title>🎂 Birthday + Personality AI</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,800&display=swap"
       rel="stylesheet"
     />
     <style>
-      /* ===== FLAT LIGHT THEME (no gradients, solid colors) ===== */
       * {
         margin: 0;
         padding: 0;
@@ -17,20 +16,18 @@
       }
 
       :root {
-        /* flat solid palette — soft light background, no transparency layers */
         --bg: #f4f7fb;
         --card: #ffffff;
         --card-border: #d9e1ec;
-        --accent-gold: #f4b942; /* solid gold */
-        --accent-rose: #e86b7b; /* solid rose */
-        --accent-cyan: #2b9c9c; /* solid teal/cyan */
+        --accent-gold: #f4b942;
+        --accent-rose: #e86b7b;
+        --accent-cyan: #2b9c9c;
         --text-primary: #1e2b3a;
         --text-secondary: #4f5d73;
         --text-muted: #7b8ba0;
         --rank-bg: #eaeef3;
         --pill-bg: #e1f0f0;
         --border-light: #d0dbe8;
-        --highlight-bg: #fff2dd; /* for today soft bg */
         --shadow: 0 6px 14px rgba(0, 10, 20, 0.05);
       }
 
@@ -39,10 +36,8 @@
         background: var(--bg);
         color: var(--text-primary);
         min-height: 100vh;
-        transition: background 0.2s;
       }
 
-      /* simple star-like dots only, very faint */
       body::before {
         content: "";
         position: fixed;
@@ -64,14 +59,10 @@
       }
 
       header h1 {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
+        font-weight: 800;
         font-size: clamp(2.2rem, 6vw, 3.8rem);
-        color: #1e3b4f; /* flat deep blue */
+        color: #1e3b4f;
         letter-spacing: -1px;
-        background: none; /* removed gradient */
-        -webkit-text-fill-color: initial;
-        background-clip: unset;
         line-height: 1.2;
       }
 
@@ -86,12 +77,11 @@
         margin-top: 1rem;
         padding: 0.4rem 1.2rem;
         border-radius: 30px;
-        background: #e3ecf5; /* flat soft blue */
+        background: #e3ecf5;
         color: #1f4a6e;
         font-weight: 500;
         font-size: 0.8rem;
         border: 1px solid #b9cfec;
-        text-transform: uppercase;
       }
 
       .container {
@@ -105,7 +95,6 @@
         gap: 0.9rem;
       }
 
-      /* ===== CARD flat style ===== */
       .card {
         background: var(--card);
         border: 1px solid var(--card-border);
@@ -119,7 +108,6 @@
         box-shadow: var(--shadow);
         transition: all 0.2s ease;
         animation: slideUp 0.35s ease backwards;
-        position: relative;
       }
 
       .card:hover {
@@ -129,9 +117,8 @@
       }
 
       .card.today {
-        background: #fff9ef; /* flat cream */
+        background: #fff9ef;
         border-left: 6px solid var(--accent-gold);
-        border-radius: 24px 24px 24px 24px;
       }
 
       .card.soon {
@@ -149,7 +136,6 @@
         }
       }
 
-      /* rank circle — solid */
       .rank {
         width: 2.8rem;
         height: 2.8rem;
@@ -180,9 +166,6 @@
         font-weight: 700;
         font-size: 1.2rem;
         color: #1d3647;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
 
       .meta {
@@ -197,11 +180,6 @@
         color: var(--text-secondary);
       }
 
-      .meta span.highlight {
-        color: var(--accent-cyan);
-        font-weight: 500;
-      }
-
       .pill-day {
         display: inline-block;
         background: var(--pill-bg);
@@ -214,24 +192,12 @@
         margin-top: 0.35rem;
       }
 
-      .card.today .pill-day {
-        background: #ffeed0;
-        border-color: var(--accent-gold);
-        color: #8a6300;
-      }
-
       .live-timer {
         font-size: 0.7rem;
         color: var(--accent-rose);
         margin-top: 0.4rem;
         font-weight: 500;
         font-variant-numeric: tabular-nums;
-        min-height: 1.4rem;
-      }
-
-      .card.today .live-timer {
-        color: #b4682d;
-        font-weight: 600;
       }
 
       .countdown {
@@ -240,15 +206,14 @@
       }
 
       .days-num {
-        font-family: "Inter", sans-serif;
         font-weight: 800;
         font-size: 2.2rem;
         line-height: 1;
-        color: #1f5f8f; /* solid flat blue */
+        color: #1f5f8f;
       }
 
       .card.today .days-num {
-        color: #c9822b; /* solid goldish */
+        color: #c9822b;
         font-size: 1.9rem;
       }
 
@@ -256,11 +221,9 @@
         font-size: 0.65rem;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.04rem;
         margin-top: 0.15rem;
       }
 
-      /* progress bar flat */
       .progress-wrap {
         margin-top: 0.7rem;
         height: 4px;
@@ -270,12 +233,8 @@
 
       .progress-bar {
         height: 100%;
-        background: #3f9eb5; /* solid cyan */
+        background: #3f9eb5;
         border-radius: 3px;
-      }
-
-      .card.today .progress-bar {
-        background: #f0b347;
       }
 
       .confetti-row {
@@ -294,12 +253,12 @@
         }
       }
 
-      /* ===== MODAL flat, no blur ===== */
+      /* MODAL */
       .modal-overlay {
         position: fixed;
         inset: 0;
         z-index: 2000;
-        background: rgba(10, 25, 40, 0.5); /* flat semi-transparent */
+        background: rgba(10, 25, 40, 0.5);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -318,7 +277,7 @@
         background: #ffffff;
         border-radius: 32px;
         width: 100%;
-        max-width: 480px;
+        max-width: 520px;
         box-shadow: 0 20px 40px rgba(0, 15, 30, 0.15);
         transform: scale(0.96) translateY(10px);
         transition: transform 0.25s ease-out;
@@ -331,7 +290,6 @@
         transform: scale(1) translateY(0);
       }
 
-      /* modal header flat */
       .modal-header {
         padding: 2rem 1.8rem 1.2rem;
         text-align: center;
@@ -356,11 +314,6 @@
         border: 2px solid #b6d2ed;
       }
 
-      .modal-header.is-today .modal-avatar {
-        background: #ffeac2;
-        border-color: #eab558;
-      }
-
       .modal-name {
         font-weight: 700;
         font-size: 1.8rem;
@@ -378,19 +331,10 @@
         font-weight: 600;
       }
 
-      /* timer boxes flat */
       .modal-timer-section {
-        padding: 1.2rem 1.8rem 1.2rem;
+        padding: 1.2rem 1.8rem;
         background: #ffffff;
         border-bottom: 1px solid #e0ecf5;
-      }
-
-      .modal-timer-label {
-        text-align: center;
-        font-size: 0.7rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        margin-bottom: 0.7rem;
       }
 
       .modal-timer-row {
@@ -412,18 +356,13 @@
       .timer-box .val {
         font-weight: 800;
         font-size: 1.8rem;
-        color: #1b5f8c; /* solid flat */
+        color: #1b5f8c;
         line-height: 1;
-      }
-
-      .is-today-timer .timer-box .val {
-        color: #d68d34;
       }
 
       .timer-box .lbl {
         font-size: 0.6rem;
         color: #7e95aa;
-        text-transform: uppercase;
         margin-top: 0.2rem;
       }
 
@@ -434,9 +373,10 @@
       .detail-row {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         padding: 0.7rem 0;
         border-bottom: 1px solid #e6eef8;
+        gap: 1rem;
       }
 
       .detail-row:last-child {
@@ -446,29 +386,18 @@
       .detail-label {
         font-size: 0.8rem;
         color: #617e9a;
+        font-weight: 500;
+        min-width: 95px;
       }
 
       .detail-value {
         font-weight: 500;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #1f3f57;
         text-align: right;
-        max-width: 60%;
+        flex: 1;
       }
 
-      .detail-value.accent {
-        color: #c97d2b;
-      }
-
-      .detail-value.rose {
-        color: #ca5c6c;
-      }
-
-      .detail-value.cyan {
-        color: #1d8383;
-      }
-
-      /* zodiac badge clickable */
       .zodiac-badge {
         display: inline-flex;
         align-items: center;
@@ -481,11 +410,6 @@
         font-size: 0.8rem;
         font-weight: 500;
         cursor: pointer;
-        transition: background 0.1s;
-      }
-
-      .zodiac-badge:hover {
-        background: #cbe6f0;
       }
 
       .modal-close {
@@ -498,8 +422,6 @@
         background: #eef3f9;
         border: 1px solid #c6d8ec;
         color: #3e617c;
-        font-size: 1rem;
-        font-weight: 400;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -509,12 +431,6 @@
         z-index: 10;
       }
 
-      .modal-close:hover {
-        background: #d4e2f0;
-        color: #032436;
-      }
-
-      /* responsive */
       @media (max-width: 500px) {
         .card {
           grid-template-columns: auto 1fr;
@@ -522,31 +438,73 @@
         .countdown {
           display: none;
         }
-        .modal-timer-row {
-          gap: 0.3rem;
-        }
-        .timer-box .val {
-          font-size: 1.5rem;
+        .detail-label {
+          min-width: 70px;
         }
       }
+
+      .personality-section {
+        background: #fafdfe;
+        margin-top: 0.8rem;
+        border-radius: 20px;
+        padding: 0.8rem 1rem;
+      }
+
+      .personality-title {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #2b6f7a;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .personality-points {
+        padding-left: 1.2rem;
+        font-size: 0.8rem;
+        color: #345f6e;
+        list-style-type: none;
+      }
+
+      .personality-points li {
+        margin-bottom: 0.4rem;
+        display: flex;
+        gap: 0.4rem;
+      }
+
+      .personality-points li::before {
+        content: "✨";
+        color: var(--accent-gold);
+      }
+
+      .vibes-text {
+        font-style: italic;
+        background: #eff7fa;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: #2a7f7f;
+      }
+
       .alert {
         font-size: 10px;
-        color: rgb(173, 43, 43);
+        color: #ad2b2b;
         text-align: center;
-        margin-bottom: 10px;
+        padding: 0.8rem;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>🎂 List Birthday</h1>
-      <p>flat & light · klik kartu untuk detail</p>
+      <h1>🎂 Birthday + Personality AI</h1>
       <div class="today-badge" id="todayLabel">—</div>
     </header>
 
     <div class="container" id="cards"></div>
 
-    <!-- MODAL UTAMA -->
+    <!-- MODAL PERSONALITY -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
       <div class="modal" id="modal">
         <button class="modal-close" onclick="closeModalDirect()">✕</button>
@@ -577,10 +535,14 @@
           </div>
         </div>
         <div class="modal-details" id="mDetails"></div>
+        <div id="personalityContainer" style="padding: 0 1.8rem 1.5rem"></div>
+        <p class="alert">
+          ✨ Hasil dari API sifat — jangan dianggap serius, cuma seru-seruan ✨
+        </p>
       </div>
     </div>
 
-    <!-- MODAL ZODIAK (flat & lebih rapi) -->
+    <!-- MODAL ZODIAK -->
     <div
       class="modal-overlay"
       id="zodiacOverlay"
@@ -593,16 +555,14 @@
           <div class="modal-name" id="zName">Aries</div>
           <div class="modal-status" id="zElement">Elemen Api</div>
         </div>
-        <div class="modal-details" id="zDetails">
-          <!-- diisi javascript -->
-        </div>
+        <div class="modal-details" id="zDetails"></div>
         <p class="alert">Jangan dianggap serius, cuma buat seruan aja</p>
       </div>
     </div>
 
     <script>
       (function () {
-        // ===== DATA TETAP =====
+        // ===================== DATA TETAP =====================
         const RAW = [
           { name: "Azura Nasya", hbd: "01,02,2006" },
           { name: "Auliya Maharlika", hbd: "27, 05, 2007" },
@@ -659,169 +619,169 @@
             sifat: "Disiplin, ambisius, realistis",
             kelemahan: "Kaku, terlalu serius",
             cocok: "Taurus, Virgo, Scorpio",
-            deskripsi:
-              "Capricorn pekerja keras, fokus pada tujuan, dan memiliki tekad kuat.",
+            deskripsi: "Capricorn pekerja keras, fokus pada tujuan.",
           },
           Aquarius: {
             element: "Udara",
             sifat: "Inovatif, unik, mandiri",
             kelemahan: "Dingin, sulit ditebak",
             cocok: "Gemini, Libra, Sagittarius",
-            deskripsi:
-              "Aquarius adalah pemikir bebas dengan ide-ide luar biasa dan pandangan luas.",
+            deskripsi: "Aquarius pemikir bebas.",
           },
           Pisces: {
             element: "Air",
             sifat: "Empatik, imajinatif, lembut",
-            kelemahan: "Terlalu sensitif, mudah melarikan diri dari kenyataan",
+            kelemahan: "Terlalu sensitif",
             cocok: "Cancer, Scorpio",
-            deskripsi:
-              "Pisces sangat perasa, penuh intuisi, dan memiliki imajinasi yang kaya.",
+            deskripsi: "Pisces sangat perasa.",
           },
           Aries: {
             element: "Api",
-            sifat: "Berani, energik, percaya diri",
-            kelemahan: "Impulsif, mudah marah",
+            sifat: "Berani, energik",
+            kelemahan: "Impulsif",
             cocok: "Leo, Sagittarius",
-            deskripsi:
-              "Aries adalah pemimpin alami yang penuh semangat dan keberanian.",
+            deskripsi: "Aries pemimpin alami.",
           },
           Taurus: {
             element: "Tanah",
-            sifat: "Setia, sabar, stabil",
-            kelemahan: "Keras kepala, materialistis",
+            sifat: "Setia, sabar",
+            kelemahan: "Keras kepala",
             cocok: "Virgo, Capricorn",
-            deskripsi:
-              "Taurus mencintai kenyamanan, keindahan, dan kestabilan hidup.",
+            deskripsi: "Taurus mencintai kenyamanan.",
           },
           Gemini: {
             element: "Udara",
-            sifat: "Cerdas, komunikatif, adaptif",
-            kelemahan: "Mudah bosan, tidak konsisten",
+            sifat: "Cerdas, komunikatif",
+            kelemahan: "Mudah bosan",
             cocok: "Libra, Aquarius",
-            deskripsi:
-              "Gemini penuh ide, suka berbicara, dan cepat beradaptasi.",
+            deskripsi: "Gemini penuh ide.",
           },
           Cancer: {
             element: "Air",
-            sifat: "Peduli, protektif, intuitif",
-            kelemahan: "Moody, terlalu sensitif",
+            sifat: "Peduli, protektif",
+            kelemahan: "Moody",
             cocok: "Pisces, Scorpio",
-            deskripsi:
-              "Cancer mengutamakan keluarga, penuh kasih sayang, dan sangat protektif.",
+            deskripsi: "Cancer penuh kasih sayang.",
           },
           Leo: {
             element: "Api",
-            sifat: "Karismatik, percaya diri, kreatif",
-            kelemahan: "Egois, haus perhatian",
+            sifat: "Karismatik, percaya diri",
+            kelemahan: "Egois",
             cocok: "Aries, Sagittarius",
-            deskripsi:
-              "Leo suka menjadi pusat perhatian dan memiliki jiwa kepemimpinan.",
+            deskripsi: "Leo suka pusat perhatian.",
           },
           Virgo: {
             element: "Tanah",
-            sifat: "Perfeksionis, teliti, analitis",
-            kelemahan: "Terlalu kritis, mudah cemas",
+            sifat: "Perfeksionis, teliti",
+            kelemahan: "Terlalu kritis",
             cocok: "Taurus, Capricorn",
-            deskripsi:
-              "Virgo sangat analitis, detail, dan selalu mencari kesempurnaan.",
+            deskripsi: "Virgo sangat analitis.",
           },
           Libra: {
             element: "Udara",
-            sifat: "Adil, romantis, harmonis",
-            kelemahan: "Sulit mengambil keputusan, mudah dipengaruhi",
+            sifat: "Adil, romantis",
+            kelemahan: "Sulit mengambil keputusan",
             cocok: "Gemini, Aquarius",
-            deskripsi:
-              "Libra menyukai keindahan, keseimbangan, dan hubungan yang harmonis.",
+            deskripsi: "Libra menyukai keseimbangan.",
           },
           Scorpio: {
             element: "Air",
-            sifat: "Misterius, intens, penuh gairah",
-            kelemahan: "Cemburuan, posesif",
+            sifat: "Misterius, intens",
+            kelemahan: "Cemburuan",
             cocok: "Cancer, Pisces",
-            deskripsi:
-              "Scorpio memiliki energi emosional yang kuat dan penuh misteri.",
+            deskripsi: "Scorpio penuh gairah.",
           },
           Sagittarius: {
             element: "Api",
-            sifat: "Optimis, petualang, jujur",
-            kelemahan: "Blak-blakan, tidak sabar",
+            sifat: "Optimis, petualang",
+            kelemahan: "Tidak sabar",
             cocok: "Aries, Leo",
-            deskripsi:
-              "Sagittarius mencintai kebebasan, eksplorasi, dan pengalaman baru.",
+            deskripsi: "Sagittarius mencintai kebebasan.",
           },
         };
 
-        // helper
         function getZodiac(d, m) {
-          for (const z of ZODIAC) {
+          for (const z of ZODIAC)
             if (m < z.end[0] || (m === z.end[0] && d <= z.end[1])) return z;
-          }
           return ZODIAC[0];
         }
-
         function todayDate() {
           const t = new Date();
           return new Date(t.getFullYear(), t.getMonth(), t.getDate());
         }
-
         function nextBirthday(d, m) {
           const now = todayDate();
-          const y = now.getFullYear();
-          let next = new Date(y, m - 1, d);
-          if (next < now) next = new Date(y + 1, m - 1, d);
+          let next = new Date(now.getFullYear(), m - 1, d);
+          if (next < now) next = new Date(now.getFullYear() + 1, m - 1, d);
           return next;
         }
-
         function daysUntil(d, m) {
-          const now = todayDate();
-          const nb = nextBirthday(d, m);
-          return Math.round((nb - now) / 86400000);
+          return Math.round((nextBirthday(d, m) - todayDate()) / 86400000);
         }
-
         function calcAge(bY, bM, bD) {
           const now = todayDate();
           let age = now.getFullYear() - bY;
           if (new Date(now.getFullYear(), bM - 1, bD) > now) age--;
           return age;
         }
-
+        function secsUntilBirthday(d, m) {
+          const now = new Date();
+          const nb = nextBirthday(d, m);
+          return Math.max(
+            0,
+            Math.floor(
+              (new Date(
+                nb.getFullYear(),
+                nb.getMonth(),
+                nb.getDate(),
+                0,
+                0,
+                0,
+              ) -
+                now) /
+                1000,
+            ),
+          );
+        }
+        function formatSecs(sec) {
+          return {
+            d: Math.floor(sec / 86400),
+            h: Math.floor((sec % 86400) / 3600),
+            m: Math.floor((sec % 3600) / 60),
+            s: sec % 60,
+          };
+        }
         function pad(n) {
           return String(n).padStart(2, "0");
         }
 
-        function secsUntilBirthday(d, m) {
-          const now = new Date();
-          const nb = nextBirthday(d, m);
-          const target = new Date(
-            nb.getFullYear(),
-            nb.getMonth(),
-            nb.getDate(),
-            0,
-            0,
-            0,
-            0,
-          );
-          return Math.max(0, Math.floor((target - now) / 1000));
+        // API call
+        async function fetchPersonality(nama, lahir, ultah, zodiak) {
+          const url = `https://ihsanbaihaqi.vercel.app/api/sifat?nama=${encodeURIComponent(nama)}&lahir=${encodeURIComponent(lahir)}&ultah=${encodeURIComponent(ultah)}&zodiak=${encodeURIComponent(zodiak)}`;
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("API error");
+            const json = await res.json();
+            return json;
+          } catch (err) {
+            console.warn(err);
+            return null;
+          }
         }
 
-        function formatSecs(total) {
-          return {
-            d: Math.floor(total / 86400),
-            h: Math.floor((total % 86400) / 3600),
-            m: Math.floor((total % 3600) / 60),
-            s: total % 60,
-          };
-        }
+        // Build data
+        const nowDate = todayDate();
+        document.getElementById("todayLabel").innerHTML =
+          `Hari ini: ${DAYS_ID[nowDate.getDay()]}, ${nowDate.getDate()} ${MONTHS_ID[nowDate.getMonth()]} ${nowDate.getFullYear()}`;
 
-        // Badge tanggal hari ini
-        const now = todayDate();
-        document.getElementById("todayLabel").textContent =
-          `Hari ini: ${DAYS_ID[now.getDay()]}, ${now.getDate()} ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()}`;
-
-        // olah data + sorting
-        const data = RAW.map((p) => {
-          const [d, m, y] = p.hbd.split(",").map(Number);
+        const people = RAW.map((p) => {
+          let [d, m, y] = p.hbd.split(",").map(Number);
+          if (isNaN(d)) {
+            const parts = p.hbd.split(/[ ,]+/);
+            d = parseInt(parts[0]);
+            m = parseInt(parts[1]);
+            y = parseInt(parts[2]);
+          }
           const days = daysUntil(d, m);
           const age = calcAge(y, m, d);
           const nb = nextBirthday(d, m);
@@ -844,100 +804,85 @@
             zodiac,
           };
         }).sort((a, b) => {
-          if (a.days === 0 && b.days === 0) return 0;
-          if (a.days === 0) return -1;
-          if (b.days === 0) return 1;
+          if (a.days === 0 && b.days !== 0) return -1;
+          if (a.days !== 0 && b.days === 0) return 1;
           return a.days - b.days;
         });
 
-        // render cards
         const container = document.getElementById("cards");
         const cardTimerMap = {};
 
-        data.forEach((p, i) => {
+        people.forEach((p, idx) => {
           const card = document.createElement("div");
           card.className = `card${p.isToday ? " today" : p.days <= 7 ? " soon" : ""}`;
-          card.style.animationDelay = `${i * 0.07}s`;
-
-          const timerId = `ct-${i}`;
           const bdateStr = `${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
-
+          const timerId = `timer-${idx}`;
           card.innerHTML = `
-        ${p.isToday ? `<div class="rank">🎂</div>` : `<div class="rank">${i + 1}</div>`}
-        <div class="info">
-          <div class="name">${p.name}</div>
-          <div class="meta">
-            <span>📅 ${bdateStr}</span>
-            <span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? "" : " nanti"}</span>
-          </div>
-          <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? " ini" : ""}</div>
-          ${p.isToday ? `<div class="confetti-row">🎊🥳🎁🎈🎊</div>` : ""}
-          <div class="live-timer" id="${timerId}">${p.isToday ? "🎉 Selamat Ulang Tahun!" : ""}</div>
-          <div class="progress-wrap"><div class="progress-bar" style="width:${p.progress}%"></div></div>
-        </div>
-        <div class="countdown">
-          ${p.isToday ? '<div class="days-num">🎉</div><div class="days-label">Hari ini!</div>' : `<div class="days-num">${p.days}</div><div class="days-label">hari lagi</div>`}
-        </div>
-      `;
-
+            <div class="rank">${p.isToday ? "🎂" : idx + 1}</div>
+            <div class="info">
+              <div class="name">${p.name}</div>
+              <div class="meta"><span>📅 ${bdateStr}</span><span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? "" : " nanti"}</span></div>
+              <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? " ini" : ""}</div>
+              ${p.isToday ? '<div class="confetti-row">🎊🥳🎁🎈🎊</div>' : ""}
+              <div class="live-timer" id="${timerId}"></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:${p.progress}%"></div></div>
+            </div>
+            <div class="countdown">${p.isToday ? '<div class="days-num">🎉</div><div class="days-label">Hari ini!</div>' : `<div class="days-num">${p.days}</div><div class="days-label">hari lagi</div>`}</div>
+          `;
           card.addEventListener("click", () => openModal(p));
           container.appendChild(card);
           if (!p.isToday) cardTimerMap[timerId] = p;
         });
 
-        // tick card timers
         function tickCards() {
           for (const [id, p] of Object.entries(cardTimerMap)) {
             const el = document.getElementById(id);
             if (!el) continue;
-            const secs = secsUntilBirthday(p.d, p.m);
-            const { d, h, m, s } = formatSecs(secs);
-            if (d >= 2) {
+            const sec = secsUntilBirthday(p.d, p.m);
+            const { d, h, m, s } = formatSecs(sec);
+            if (d >= 2)
               el.textContent = `⏳ ${d} hari ${pad(h)}:${pad(m)}:${pad(s)} lagi`;
-            } else if (d === 1) {
+            else if (d === 1)
               el.textContent = `⏳ 1 hari ${pad(h)} jam ${pad(m)} menit lagi`;
-            } else {
+            else
               el.textContent = `⏳ ${pad(h)} jam ${pad(m)} menit ${pad(s)} detik lagi`;
-            }
           }
         }
         setInterval(tickCards, 1000);
-        tickCards();
 
-        // ===== MODAL UTAMA =====
+        // MODAL dengan API
         let modalInterval = null;
-        let activeP = null;
+        let activePerson = null;
 
-        function openModal(p) {
-          activeP = p;
-
+        async function openModal(p) {
+          activePerson = p;
           const overlay = document.getElementById("modalOverlay");
           const mHeader = document.getElementById("mHeader");
           const mName = document.getElementById("mName");
           const mStatus = document.getElementById("mStatus");
           const mAvatar = document.getElementById("mAvatar");
           const mDetails = document.getElementById("mDetails");
-          const mTimerLabel = document.getElementById("mTimerLabel");
-          const mTimerRow = document.getElementById("mTimerRow");
+          const personalityDiv = document.getElementById(
+            "personalityContainer",
+          );
 
           mAvatar.textContent = p.isToday ? "🎉" : p.days <= 7 ? "🎁" : "⏳";
           mName.textContent = p.name;
           mHeader.className = "modal-header" + (p.isToday ? " is-today" : "");
-          mTimerRow.className =
-            "modal-timer-row" + (p.isToday ? " is-today-timer" : "");
-
           if (p.isToday) {
             mStatus.className = "modal-status celebrating";
             mStatus.textContent = "🎉 Selamat Ulang Tahun!";
-            mTimerLabel.textContent = "Sedang Merayakan 🎂";
+            document.getElementById("mTimerLabel").textContent =
+              "Sedang Merayakan 🎂";
           } else {
             mStatus.className = "modal-status";
-            mStatus.textContent = `Menunggu ulang tahun berikutnya`;
-            mTimerLabel.textContent = "Hitung Mundur";
+            mStatus.textContent = "Menunggu ulang tahun berikutnya";
+            document.getElementById("mTimerLabel").textContent =
+              "Hitung Mundur";
           }
 
-          const bdOW = DAYS_ID[new Date(p.y, p.m - 1, p.d).getDay()];
-          const bdateStr = `${bdOW}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
+          const birthWeekday = DAYS_ID[new Date(p.y, p.m - 1, p.d).getDay()];
+          const bdateStr = `${birthWeekday}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
           const nextYear = p.nb.getFullYear();
           const nextStr = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m - 1]} ${nextYear}`;
           const totalDays = Math.round(
@@ -945,84 +890,109 @@
           );
 
           mDetails.innerHTML = `
-        <div class="detail-row"><span class="detail-label">📅 Lahir</span><span class="detail-value">${bdateStr}</span></div>
-        <div class="detail-row"><span class="detail-label">👤 Umur</span><span class="detail-value cyan">${p.age} tahun</span></div>
-        <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? " (hari ini!)" : ""}</span></div>
-        <div class="detail-row"><span class="detail-label">📆 Ulang Tahun jatuh</span><span class="detail-value rose">${p.isToday ? "HARI INI" : nextStr}</span></div>
-        <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? "—" : p.days}</span></div>
-        <div class="detail-row">
-          <span class="detail-label">✨ Zodiak</span>
-          <span class="detail-value"><span class="zodiac-badge" onclick="openZodiacModal('${p.zodiac.name}')">${p.zodiac.sym} ${p.zodiac.name}</span></span>
-        </div>
-        <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString("id")} hari</span></div>
-      `;
+            <div class="detail-row"><span class="detail-label">📅 Lahir</span><span class="detail-value">${bdateStr}</span></div>
+            <div class="detail-row"><span class="detail-label">👤 Umur</span><span class="detail-value cyan">${p.age} tahun</span></div>
+            <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? " (hari ini!)" : ""}</span></div>
+            <div class="detail-row"><span class="detail-label">📆 Ultah jatuh</span><span class="detail-value rose">${p.isToday ? "HARI INI" : nextStr}</span></div>
+            <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? "—" : p.days}</span></div>
+            <div class="detail-row"><span class="detail-label">✨ Zodiak</span><span class="detail-value"><span class="zodiac-badge" onclick="openZodiacModal('${p.zodiac.name}')">${p.zodiac.sym} ${p.zodiac.name}</span></span></div>
+            <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString("id")} hari</span></div>
+          `;
+
+          personalityDiv.innerHTML = `<div style="text-align:center; padding:1rem;">⏳ Memuat kepribadian dari AI...</div>`;
+
+          // Panggil API
+          const lahirString = `${birthWeekday}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
+          const ultahString = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.isToday ? p.nb.getFullYear() : p.nb.getFullYear()}`;
+          const personality = await fetchPersonality(
+            p.name,
+            lahirString,
+            ultahString,
+            p.zodiac.name,
+          );
+
+          if (personality && typeof personality === "object") {
+            const renderList = (arr) =>
+              arr.map((item) => `<li>${item}</li>`).join("");
+            personalityDiv.innerHTML = `
+              <div class="personality-section">
+                <div class="personality-title">🧠 Kepribadian Umum</div>
+                <ul class="personality-points">${renderList(personality.kepribadian_umum?.points || [])}</ul>
+                <div class="vibes-text">🎵 ${personality.kepribadian_umum?.vibes || "—"}</div>
+              </div>
+              <div class="personality-section">
+                <div class="personality-title">❤️ Percintaan</div>
+                <ul class="personality-points">${renderList(personality.percintaan?.points || [])}</ul>
+                <div class="vibes-text">💞 ${personality.percintaan?.vibes || "—"}</div>
+              </div>
+              <div class="personality-section"><div class="personality-title">⭐ Sisi Positif</div><ul class="personality-points">${renderList(personality.sisi_positif || [])}</ul></div>
+              <div class="personality-section"><div class="personality-title">⚠️ Sisi Negatif</div><ul class="personality-points">${renderList(personality.sisi_negatif || [])}</ul></div>
+              <div class="personality-section"><div class="personality-title">🌱 Kelemahan</div><ul class="personality-points">${renderList(personality.kelemahan || [])}</ul></div>
+              <div class="personality-section"><div class="personality-title">👥 Saat Dekat dengan Orang</div><ul class="personality-points">${renderList(personality.saat_dekat_dengan_orang || [])}</ul></div>
+              <div class="personality-section"><div class="personality-title">😤 Saat Marah & Kecewa</div><ul class="personality-points">${renderList(personality.saat_marah_dan_kecewa || [])}</ul></div>
+              <div class="personality-section"><div class="personality-title">🔮 Fakta Unik</div><ul class="personality-points">${renderList(personality.fakta_unik?.points || [])}</ul><div class="vibes-text">👀 ${personality.fakta_unik?.first_impression || ""}</div></div>
+              <div class="personality-section"><div class="personality-title">💞 Cocok dengan Zodiak</div><ul class="personality-points">${renderList(personality.cocok_dengan?.zodiak || [])}</ul><div class="vibes-text">💬 ${(personality.cocok_dengan?.alasan || []).join(" · ")}</div></div>
+              <div class="personality-section"><div class="personality-title">💔 Tidak Cocok dengan</div><ul class="personality-points">${renderList(personality.tidak_cocok_dengan?.zodiak || [])}</ul><div class="vibes-text">⚡ ${(personality.tidak_cocok_dengan?.alasan || []).join(" · ")}</div></div>
+            `;
+          } else {
+            personalityDiv.innerHTML = `<div class="personality-section"><div class="personality-title">✨ Gagal memuat data API</div><div class="vibes-text">Tapi tetap keren kok! 🎂</div></div>`;
+          }
 
           overlay.classList.add("open");
           document.body.style.overflow = "hidden";
-
           function tickModal() {
-            if (!activeP) return;
-            if (activeP.isToday) {
-              ["tDays", "tHours", "tMins", "tSecs"].forEach(
-                (id) => (document.getElementById(id).textContent = "00"),
-              );
+            if (!activePerson || activePerson.isToday) {
+              if (!activePerson?.isToday) return;
+              document.getElementById("tDays").textContent = "00";
+              document.getElementById("tHours").textContent = "00";
+              document.getElementById("tMins").textContent = "00";
+              document.getElementById("tSecs").textContent = "00";
               return;
             }
             const { d, h, m, s } = formatSecs(
-              secsUntilBirthday(activeP.d, activeP.m),
+              secsUntilBirthday(activePerson.d, activePerson.m),
             );
             document.getElementById("tDays").textContent = pad(d);
             document.getElementById("tHours").textContent = pad(h);
             document.getElementById("tMins").textContent = pad(m);
             document.getElementById("tSecs").textContent = pad(s);
           }
-
           if (modalInterval) clearInterval(modalInterval);
           tickModal();
           modalInterval = setInterval(tickModal, 1000);
         }
 
         window.closeModalBg = (e) => {
-          if (e.target === document.getElementById("modalOverlay"))
-            closeModalDirect();
+          if (e.target.id === "modalOverlay") closeModalDirect();
         };
         window.closeModalDirect = () => {
           document.getElementById("modalOverlay").classList.remove("open");
           document.body.style.overflow = "";
-          if (modalInterval) {
-            clearInterval(modalInterval);
-            modalInterval = null;
-          }
-          activeP = null;
+          if (modalInterval) clearInterval(modalInterval);
+          activePerson = null;
         };
 
-        // ===== ZODIAK MODAL (diperbaiki + lebih detail) =====
         window.openZodiacModal = (name) => {
           const data = ZODIAC_DETAIL[name];
           if (!data) return;
           const zodiacInfo = ZODIAC.find((z) => z.name === name);
-          if (!zodiacInfo) return;
-
           document.getElementById("zAvatar").textContent = zodiacInfo.sym;
           document.getElementById("zName").textContent = name;
           document.getElementById("zElement").textContent =
             "Elemen " + data.element;
           document.getElementById("zDetails").innerHTML = `
-        <div class="detail-row"><span class="detail-label">🌟 Sifat</span><span class="detail-value">${data.sifat}</span></div>
-        <div class="detail-row"><span class="detail-label">⚠️ Kelemahan</span><span class="detail-value rose">${data.kelemahan}</span></div>
-        <div class="detail-row"><span class="detail-label">💕 Cocok</span><span class="detail-value zodiac-badge" style="background:#eaf2fa">${data.cocok}</span></div>
-        <div class="detail-row"><span class="detail-label">📖 Deskripsi</span><span class="detail-value">${data.deskripsi}</span></div>
-      `;
+            <div class="detail-row"><span class="detail-label">🌟 Sifat</span><span class="detail-value">${data.sifat}</span></div>
+            <div class="detail-row"><span class="detail-label">⚠️ Kelemahan</span><span class="detail-value rose">${data.kelemahan}</span></div>
+            <div class="detail-row"><span class="detail-label">💕 Cocok</span><span class="detail-value">${data.cocok}</span></div>
+            <div class="detail-row"><span class="detail-label">📖 Deskripsi</span><span class="detail-value">${data.deskripsi}</span></div>
+          `;
           document.getElementById("zodiacOverlay").classList.add("open");
         };
-
-        window.closeZodiac = () => {
+        window.closeZodiac = () =>
           document.getElementById("zodiacOverlay").classList.remove("open");
-        };
         window.closeZodiacBg = (e) => {
           if (e.target.id === "zodiacOverlay") closeZodiac();
         };
-
         document.addEventListener("keydown", (e) => {
           if (e.key === "Escape") {
             closeModalDirect();
