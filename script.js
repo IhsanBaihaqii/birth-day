@@ -217,7 +217,10 @@
     const nb = nextBirthday(d, m);
     const isToday = days === 0;
     const turningAge = isToday ? age : age + 1;
-    const progress = Math.round(((365 - days) / 365) * 100);
+    const progress = Math.min(
+      100,
+      Math.max(0, Math.round(((365 - days) / 365) * 100)),
+    );
     const zodiac = getZodiac(d, m);
     return {
       name: p.name,
@@ -248,17 +251,17 @@
     const bdateStr = `${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
     const timerId = `timer-${idx}`;
     card.innerHTML = `
-            <div class="rank">${p.isToday ? "🎂" : idx + 1}</div>
-            <div class="info">
-              <div class="name">${p.name}</div>
-              <div class="meta"><span>📅 ${bdateStr}</span><span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? "" : " nanti"}</span></div>
-              <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? " ini" : ""}</div>
-              ${p.isToday ? '<div class="confetti-row">🎊🥳🎁🎈🎊</div>' : ""}
-              <div class="live-timer" id="${timerId}"></div>
-              <div class="progress-wrap"><div class="progress-bar" style="width:${p.progress}%"></div></div>
-            </div>
-            <div class="countdown">${p.isToday ? '<div class="days-num">🎉</div><div class="days-label">Hari ini!</div>' : `<div class="days-num">${p.days}</div><div class="days-label">hari lagi</div>`}</div>
-          `;
+      <div class="rank">${p.isToday ? "🎂" : idx + 1}</div>
+      <div class="info">
+        <div class="name">${p.name}</div>
+        <div class="meta"><span>📅 ${bdateStr}</span><span class="highlight">🎂 ${p.isToday ? p.age : p.turningAge} tahun${p.isToday ? "" : " nanti"}</span></div>
+        <div class="pill-day">Ulang tahun hari ${p.bdayOfWeek}${p.isToday ? " ini" : ""}</div>
+        ${p.isToday ? '<div class="confetti-row">🎊🥳🎁🎈🎊</div>' : ""}
+        <div class="live-timer" id="${timerId}"></div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:${p.progress}%"></div></div>
+      </div>
+      <div class="countdown">${p.isToday ? '<div class="days-num">🎉</div><div class="days-label">Hari ini!</div>' : `<div class="days-num">${p.days}</div><div class="days-label">hari lagi</div>`}</div>
+    `;
     card.addEventListener("click", () => openModal(p));
     container.appendChild(card);
     if (!p.isToday) cardTimerMap[timerId] = p;
@@ -280,7 +283,7 @@
   }
   setInterval(tickCards, 1000);
 
-  // MODAL dengan API
+  // MODAL dengan tombol AI
   let modalInterval = null;
   let activePerson = null;
 
@@ -317,59 +320,111 @@
     );
 
     mDetails.innerHTML = `
-            <div class="detail-row"><span class="detail-label">📅 Lahir</span><span class="detail-value">${bdateStr}</span></div>
-            <div class="detail-row"><span class="detail-label">👤 Umur</span><span class="detail-value cyan">${p.age} tahun</span></div>
-            <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? " (hari ini!)" : ""}</span></div>
-            <div class="detail-row"><span class="detail-label">📆 Ultah jatuh</span><span class="detail-value rose">${p.isToday ? "HARI INI" : nextStr}</span></div>
-            <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? "—" : p.days}</span></div>
-            <div class="detail-row"><span class="detail-label">✨ Zodiak</span><span class="detail-value"><span class="zodiac-badge" onclick="openZodiacModal('${p.zodiac.name}')">${p.zodiac.sym} ${p.zodiac.name}</span></span></div>
-            <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString("id")} hari</span></div>
+      <div class="detail-row"><span class="detail-label">📅 Lahir</span><span class="detail-value">${bdateStr}</span></div>
+      <div class="detail-row"><span class="detail-label">👤 Umur</span><span class="detail-value cyan">${p.age} tahun</span></div>
+      <div class="detail-row"><span class="detail-label">🎂 Akan berumur</span><span class="detail-value accent">${p.turningAge} tahun${p.isToday ? " (hari ini!)" : ""}</span></div>
+      <div class="detail-row"><span class="detail-label">📆 Ultah jatuh</span><span class="detail-value rose">${p.isToday ? "HARI INI" : nextStr}</span></div>
+      <div class="detail-row"><span class="detail-label">⏳ Hari lagi</span><span class="detail-value">${p.isToday ? "—" : p.days}</span></div>
+      <div class="detail-row"><span class="detail-label">✨ Zodiak</span><span class="detail-value"><span class="zodiac-badge" onclick="window.openZodiacModal('${p.zodiac.name}')">${p.zodiac.sym} ${p.zodiac.name}</span></span></div>
+      <div class="detail-row"><span class="detail-label">🗓️ Hidup ±</span><span class="detail-value">${totalDays.toLocaleString("id")} hari</span></div>
+    `;
+
+    // Tampilkan tombol AI (kosong belum ada hasil)
+    personalityDiv.innerHTML = `
+      <button id="aiGenerateBtn" style="
+        width: 100%;
+        background: linear-gradient(135deg, #2b9c9c, #1f6e6e);
+        border: none;
+        border-radius: 40px;
+        padding: 0.8rem 1rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      ">
+        ✨ Hasilkan dengan AI ✨
+      </button>
+      <div id="aiResultArea" style="margin-top: 1rem;"></div>
+    `;
+
+    // Pasang event listener untuk tombol AI
+    const aiBtn = document.getElementById("aiGenerateBtn");
+    const aiResultArea = document.getElementById("aiResultArea");
+
+    // Hapus event listener lama (pakai clone biar fresh)
+    const newBtn = aiBtn.cloneNode(true);
+    aiBtn.parentNode.replaceChild(newBtn, aiBtn);
+
+    newBtn.addEventListener("click", async () => {
+      // Loading state
+      aiResultArea.innerHTML = `
+        <div style="text-align: center; padding: 1rem; background: #f0f7fa; border-radius: 20px;">
+          ⏳ AI sedang membaca aura dan kepribadian... ⏳
+        </div>
+      `;
+      newBtn.disabled = true;
+      newBtn.style.opacity = "0.6";
+      newBtn.style.cursor = "wait";
+
+      // Siapkan parameter untuk API
+      const birthWeekdayAPI = DAYS_ID[new Date(p.y, p.m - 1, p.d).getDay()];
+      const lahirString = `${birthWeekdayAPI}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
+      const ultahString = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.isToday ? p.nb.getFullYear() : p.nb.getFullYear()}`;
+
+      try {
+        const personality = await fetchPersonality(
+          p.name,
+          lahirString,
+          ultahString,
+          p.zodiac.name,
+        );
+
+        if (personality && typeof personality === "object") {
+          const renderList = (arr) =>
+            (arr || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+          aiResultArea.innerHTML = `
+            <div class="personality-section">
+              <div class="personality-title">🧠 Kepribadian Umum</div>
+              <ul class="personality-points">${renderList(personality.kepribadian_umum?.points)}</ul>
+              <div class="vibes-text">🎵 ${escapeHtml(personality.kepribadian_umum?.vibes || "—")}</div>
+            </div>
+            <div class="personality-section">
+              <div class="personality-title">❤️ Percintaan</div>
+              <ul class="personality-points">${renderList(personality.percintaan?.points)}</ul>
+              <div class="vibes-text">💞 ${escapeHtml(personality.percintaan?.vibes || "—")}</div>
+            </div>
+            <div class="personality-section"><div class="personality-title">⭐ Sisi Positif</div><ul class="personality-points">${renderList(personality.sisi_positif)}</ul></div>
+            <div class="personality-section"><div class="personality-title">⚠️ Sisi Negatif</div><ul class="personality-points">${renderList(personality.sisi_negatif)}</ul></div>
+            <div class="personality-section"><div class="personality-title">🌱 Kelemahan</div><ul class="personality-points">${renderList(personality.kelemahan)}</ul></div>
+            <div class="personality-section"><div class="personality-title">👥 Saat Dekat dengan Orang</div><ul class="personality-points">${renderList(personality.saat_dekat_dengan_orang)}</ul></div>
+            <div class="personality-section"><div class="personality-title">😤 Saat Marah & Kecewa</div><ul class="personality-points">${renderList(personality.saat_marah_dan_kecewa)}</ul></div>
+            <div class="personality-section"><div class="personality-title">🔮 Fakta Unik</div><ul class="personality-points">${renderList(personality.fakta_unik?.points)}</ul><div class="vibes-text">👀 ${escapeHtml(personality.fakta_unik?.first_impression || "")}</div></div>
+            <div class="personality-section"><div class="personality-title">💞 Cocok dengan Zodiak</div><ul class="personality-points">${renderList(personality.cocok_dengan?.zodiak)}</ul><div class="vibes-text">💬 ${escapeHtml((personality.cocok_dengan?.alasan || []).join(" · "))}</div></div>
+            <div class="personality-section"><div class="personality-title">💔 Tidak Cocok dengan</div><ul class="personality-points">${renderList(personality.tidak_cocok_dengan?.zodiak)}</ul><div class="vibes-text">⚡ ${escapeHtml((personality.tidak_cocok_dengan?.alasan || []).join(" · "))}</div></div>
           `;
-
-    personalityDiv.innerHTML = `<div style="text-align:center; padding:1rem;">⏳ Memuat kepribadian dari AI...</div>`;
-
-    // Panggil API
-    const lahirString = `${birthWeekday}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
-    const ultahString = `${p.bdayOfWeek}, ${p.d} ${MONTHS_ID[p.m - 1]} ${p.isToday ? p.nb.getFullYear() : p.nb.getFullYear()}`;
-    const personality = await fetchPersonality(
-      p.name,
-      lahirString,
-      ultahString,
-      p.zodiac.name,
-    );
-
-    if (personality && typeof personality === "object") {
-      const renderList = (arr) =>
-        arr.map((item) => `<li>${item}</li>`).join("");
-      personalityDiv.innerHTML = `
-              <div class="personality-section">
-                <div class="personality-title">🧠 Kepribadian Umum</div>
-                <ul class="personality-points">${renderList(personality.kepribadian_umum?.points || [])}</ul>
-                <div class="vibes-text">🎵 ${personality.kepribadian_umum?.vibes || "—"}</div>
-              </div>
-              <div class="personality-section">
-                <div class="personality-title">❤️ Percintaan</div>
-                <ul class="personality-points">${renderList(personality.percintaan?.points || [])}</ul>
-                <div class="vibes-text">💞 ${personality.percintaan?.vibes || "—"}</div>
-              </div>
-              <div class="personality-section"><div class="personality-title">⭐ Sisi Positif</div><ul class="personality-points">${renderList(personality.sisi_positif || [])}</ul></div>
-              <div class="personality-section"><div class="personality-title">⚠️ Sisi Negatif</div><ul class="personality-points">${renderList(personality.sisi_negatif || [])}</ul></div>
-              <div class="personality-section"><div class="personality-title">🌱 Kelemahan</div><ul class="personality-points">${renderList(personality.kelemahan || [])}</ul></div>
-              <div class="personality-section"><div class="personality-title">👥 Saat Dekat dengan Orang</div><ul class="personality-points">${renderList(personality.saat_dekat_dengan_orang || [])}</ul></div>
-              <div class="personality-section"><div class="personality-title">😤 Saat Marah & Kecewa</div><ul class="personality-points">${renderList(personality.saat_marah_dan_kecewa || [])}</ul></div>
-              <div class="personality-section"><div class="personality-title">🔮 Fakta Unik</div><ul class="personality-points">${renderList(personality.fakta_unik?.points || [])}</ul><div class="vibes-text">👀 ${personality.fakta_unik?.first_impression || ""}</div></div>
-              <div class="personality-section"><div class="personality-title">💞 Cocok dengan Zodiak</div><ul class="personality-points">${renderList(personality.cocok_dengan?.zodiak || [])}</ul><div class="vibes-text">💬 ${(personality.cocok_dengan?.alasan || []).join(" · ")}</div></div>
-              <div class="personality-section"><div class="personality-title">💔 Tidak Cocok dengan</div><ul class="personality-points">${renderList(personality.tidak_cocok_dengan?.zodiak || [])}</ul><div class="vibes-text">⚡ ${(personality.tidak_cocok_dengan?.alasan || []).join(" · ")}</div></div>
-            `;
-    } else {
-      personalityDiv.innerHTML = `<div class="personality-section"><div class="personality-title">✨ Gagal memuat data API</div><div class="vibes-text">Tapi tetap keren kok! 🎂</div></div>`;
-    }
+        } else {
+          aiResultArea.innerHTML = `<div class="personality-section"><div class="vibes-text">❌ Gagal memuat data dari API. Coba lagi nanti.</div></div>`;
+        }
+      } catch (err) {
+        aiResultArea.innerHTML = `<div class="personality-section"><div class="vibes-text">⚠️ Error: ${escapeHtml(err.message)}</div></div>`;
+      } finally {
+        newBtn.disabled = false;
+        newBtn.style.opacity = "1";
+        newBtn.style.cursor = "pointer";
+      }
+    });
 
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
+
     function tickModal() {
-      if (!activePerson || activePerson.isToday) {
-        if (!activePerson?.isToday) return;
+      if (!activePerson) return;
+      if (activePerson.isToday) {
         document.getElementById("tDays").textContent = "00";
         document.getElementById("tHours").textContent = "00";
         document.getElementById("tMins").textContent = "00";
@@ -384,9 +439,21 @@
       document.getElementById("tMins").textContent = pad(m);
       document.getElementById("tSecs").textContent = pad(s);
     }
+
     if (modalInterval) clearInterval(modalInterval);
     tickModal();
     modalInterval = setInterval(tickModal, 1000);
+  }
+
+  // Helper escape HTML
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, function (m) {
+      if (m === "&") return "&amp;";
+      if (m === "<") return "&lt;";
+      if (m === ">") return "&gt;";
+      return m;
+    });
   }
 
   window.closeModalBg = (e) => {
@@ -407,22 +474,24 @@
     document.getElementById("zName").textContent = name;
     document.getElementById("zElement").textContent = "Elemen " + data.element;
     document.getElementById("zDetails").innerHTML = `
-            <div class="detail-row"><span class="detail-label">🌟 Sifat</span><span class="detail-value">${data.sifat}</span></div>
-            <div class="detail-row"><span class="detail-label">⚠️ Kelemahan</span><span class="detail-value rose">${data.kelemahan}</span></div>
-            <div class="detail-row"><span class="detail-label">💕 Cocok</span><span class="detail-value">${data.cocok}</span></div>
-            <div class="detail-row"><span class="detail-label">📖 Deskripsi</span><span class="detail-value">${data.deskripsi}</span></div>
-          `;
+      <div class="detail-row"><span class="detail-label">🌟 Sifat</span><span class="detail-value">${data.sifat}</span></div>
+      <div class="detail-row"><span class="detail-label">⚠️ Kelemahan</span><span class="detail-value rose">${data.kelemahan}</span></div>
+      <div class="detail-row"><span class="detail-label">💕 Cocok</span><span class="detail-value">${data.cocok}</span></div>
+      <div class="detail-row"><span class="detail-label">📖 Deskripsi</span><span class="detail-value">${data.deskripsi}</span></div>
+    `;
     document.getElementById("zodiacOverlay").classList.add("open");
   };
+
   window.closeZodiac = () =>
     document.getElementById("zodiacOverlay").classList.remove("open");
   window.closeZodiacBg = (e) => {
     if (e.target.id === "zodiacOverlay") closeZodiac();
   };
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModalDirect();
-      closeZodiac();
+      window.closeZodiac();
     }
   });
 })();
