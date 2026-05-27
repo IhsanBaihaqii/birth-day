@@ -5,6 +5,7 @@
     { name: "Auliya Maharlika", hbd: "26, 05, 2007" },
     { name: "Bulan Febiola", hbd: "27,02,2005" },
     { name: "Siti Zahra", hbd: "03,03,2006" },
+    { name: "Siti Fauziah Tarigan", hbd: "18,12,2006" },
     { name: "Ihsan Baihaqi", hbd: "04,03,2006" },
     { name: "Hairul Mahesa", hbd: "29,05,2004" },
     { name: "Fauzi Hendrawan", hbd: "30,03,2004" },
