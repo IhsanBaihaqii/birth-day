@@ -2,7 +2,7 @@
   // ===================== DATA TETAP =====================
   const RAW = [
     { name: "Azura Nasya", hbd: "01,02,2006" },
-    { name: "Auliya Maharlika", hbd: "27, 05, 2007" },
+    { name: "Auliya Maharlika", hbd: "26, 05, 2007" },
     { name: "Bulan Febiola", hbd: "27,02,2005" },
     { name: "Siti Zahra", hbd: "03,03,2006" },
     { name: "Ihsan Baihaqi", hbd: "04,03,2006" },
