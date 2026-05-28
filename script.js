@@ -202,8 +202,15 @@
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error("API error");
-      const json = await res.json();
-      return json;
+      const text = await res.text();
+
+      try {
+        const json = JSON.parse(text);
+        return json;
+      } catch (e) {
+        console.error("JSON Invalid:", text);
+        return null;
+      }
     } catch (err) {
       console.warn(err);
       return null;
@@ -556,7 +563,7 @@
             </div>
             <div class="flex items-center justify-between px-4 py-3 text-xs sm:text-sm transition-all hover:bg-slate-50">
               <span class="text-slate-400 font-bold"><i class="fa-solid fa-arrows-spin mr-2 w-4"></i>Jatuh Hari</span>
-              <span class="text-slate-800 font-extrabold text-right">${p.bdayOfWeek} (${p.isToday ? "HARI INI" : nextStr})</span>
+              <span class="text-slate-800 font-extrabold text-right">${p.isToday ? "HARI INI" : nextStr}</span>
             </div>
             <div class="flex items-center justify-between px-4 py-3 text-xs sm:text-sm transition-all hover:bg-slate-50">
               <span class="text-slate-400 font-bold"><i class="fa-solid fa-calendar-check mr-2 w-4"></i>Sisa Jarak</span>
@@ -663,7 +670,7 @@
         if (statusLabel) statusLabel.textContent = loadingSteps[step];
         step++;
       }
-    }, 1400);
+    }, 2000);
 
     try {
       const birthWeekdayAPI = DAYS_ID[new Date(p.y, p.m - 1, p.d).getDay()];
@@ -679,7 +686,7 @@
 
       clearInterval(statusInterval);
 
-      if (data && typeof data === "object") {
+      if (data && typeof data === "object" && Object.keys(data).length > 0) {
         renderAISequentialResults(data);
       } else {
         aiResultArea.innerHTML = `
@@ -763,6 +770,54 @@
         icon: "fa-sparkles",
         accent: "text-purple-600 bg-purple-50 border-purple-100",
         isVibeLabel: "👀 First Impression",
+      },
+      {
+        title: "Social Battery",
+        points: [
+          ...(personality.social_battery?.kebiasaan || []),
+          ...(personality.social_battery?.saat_lelah_sosial || []),
+        ],
+        vibes: personality.social_battery?.tipe,
+        icon: "fa-battery-half",
+        accent: "text-cyan-600 bg-cyan-50 border-cyan-100",
+        isVibeLabel: "⚡ Tipe Energi Sosial",
+      },
+      {
+        title: "Kebiasaan Random",
+        points: personality.kebiasaan_random || [],
+        icon: "fa-wand-magic-sparkles",
+        accent: "text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100",
+      },
+      {
+        title: "Anime Character Vibes",
+        points: (personality.anime_character_vibes?.karakter || []).map(
+          (k, i) => {
+            const alasan = personality.anime_character_vibes?.alasan?.[i] || "";
+            return `${k} — ${alasan}`;
+          },
+        ),
+        icon: "fa-dragon",
+        accent: "text-pink-600 bg-pink-50 border-pink-100",
+      },
+      {
+        title: "Game Character Vibes",
+        points: (personality.game_character_vibes?.karakter || []).map(
+          (k, i) => {
+            const alasan = personality.game_character_vibes?.alasan?.[i] || "";
+            return `${k} — ${alasan}`;
+          },
+        ),
+        icon: "fa-gamepad",
+        accent: "text-violet-600 bg-violet-50 border-violet-100",
+      },
+      {
+        title: "Idol Vibes",
+        points: (personality.idol_vibes?.idol || []).map((k, i) => {
+          const alasan = personality.idol_vibes?.alasan?.[i] || "";
+          return `${k} — ${alasan}`;
+        }),
+        icon: "fa-microphone",
+        accent: "text-rose-600 bg-rose-50 border-rose-100",
       },
       {
         title: "Kecocokan Sinergi Zodiak",
@@ -896,7 +951,7 @@
           // Done on lists, reveal vibes under it if any
           if (sec.vibes) {
             vibesBox.className =
-              "mt-4 pt-3 border-t border-dashed border-slate-100 text-xs text-brand-teal font-medium flex items-start gap-2 animate-fade-in";
+              "mt-4 pt-3 border-t border-dashed border-slate-100 text-xs text-brand-teal font-medium flex flex-col gap-2 animate-fade-in";
             vibesBox.innerHTML = `
                     <span class="bg-teal-50 text-brand-teal px-2 py-0.5 rounded-md font-bold text-[10px] shrink-0 uppercase tracking-wider">${sec.isVibeLabel || "Review"}</span>
                     <span class="italic text-slate-500 font-medium">${sec.vibes}</span>
