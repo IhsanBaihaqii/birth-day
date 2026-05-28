@@ -2,4 +2,4 @@
 List Yang Berulang Tahun
 
 
-[Lihat](https://ihsanbaihaqii.github.io/birth-day)
+[Lihat: https://ai-list-birthday.vercel.app/](https://ai-list-birthday.vercel.app/)
