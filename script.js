@@ -1,17 +1,28 @@
 (function () {
+  // get
+  const params = new URLSearchParams(window.location.search);
+  const getData = params.get("data");
+
   // ===================== DATA TETAP =====================
-  const RAW = [
-    { name: "Azura Nasya", hbd: "01,02,2006" },
-    { name: "Auliya Maharlika", hbd: "26, 05, 2007" },
-    { name: "Bulan Febiola", hbd: "27,02,2005" },
-    { name: "Dini Nafiza", hbd: "09,06,2006" },
-    { name: "Siti Zahra Fazria", hbd: "03,03,2006" },
-    { name: "Siti Fauziah Tarigan", hbd: "18,12,2006" },
-    { name: "Ihsan Baihaqi", hbd: "04,03,2006" },
-    { name: "Hairul Mahesa", hbd: "29,05,2004" },
-    { name: "Fauzi Hendrawan", hbd: "30,03,2004" },
-    { name: "Anaya Oktavia", hbd: "18,10,2006" },
-  ];
+  const RAW = {
+    ["24m11"]: [
+      { name: "Azura Nasya", hbd: "01,02,2006" },
+      { name: "Auliya Maharlika", hbd: "26, 05, 2007" },
+      { name: "Bulan Febiola", hbd: "27,02,2005" },
+      { name: "Dini Nafiza", hbd: "09,06,2006" },
+      { name: "Siti Zahra Fazria", hbd: "03,03,2006" },
+      { name: "Siti Fauziah Tarigan", hbd: "18,12,2006" },
+      { name: "Ihsan Baihaqi", hbd: "04,03,2006" },
+      { name: "Hairul Mahesa", hbd: "29,05,2004" },
+      { name: "Fauzi Hendrawan", hbd: "30,03,2004" },
+      { name: "Anaya Oktavia", hbd: "18,10,2006" },
+    ],
+
+    ["saentis"]: [
+      { name: "Ihsan Baihaqi", hbd: "01,03,2006" },
+      { name: "Fahriza Agustiawan", hbd: "28,08,2008" },
+    ],
+  };
 
   const DAYS_ID = [
     "Minggu",
@@ -224,7 +235,7 @@
 
   let currentSortMode = "days"; // 'days' or 'alpha'
 
-  let people = RAW.map((p) => {
+  let people = RAW[getData]?.map((p) => {
     let [d, m, y] = p.hbd.split(",").map(Number);
     if (isNaN(d)) {
       const parts = p.hbd.split(/[ ,]+/);
@@ -257,7 +268,7 @@
       zodiac,
     };
   });
-
+  if (!people) return;
   // Spotlight widget filling
   const todayBDays = people.filter((p) => p.isToday);
   const spotlightCard = document.getElementById("spotlightCard");

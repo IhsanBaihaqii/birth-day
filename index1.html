@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎂 Birthday & Personality AI</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons (Font Awesome 6) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                bg: "#f8fafc", // Solid light slate background
+                card: "#ffffff", // Solid white cards
+                border: "#e2e8f0", // Light slate border
+                text: "#0f172a", // Deep slate-dark text
+                dark: "#1e293b", // Solid slate dark accent
+                primary: "#4f46e5", // Solid elegant Indigo primary
+                teal: "#0d9488", // Solid teal for personality / zodiac
+                rose: "#f43f5e", // Red-rose for soon countdowns
+                gold: "#eab308", // Solid rich yellow for today birthday
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* --- Custom Animations & Polish --- */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: #0f172a;
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <!-- Err: gagal mendapatkan data -->
+  <body class="min-h-screen flex items-center justify-center p-4">
+    <div
+      class="bg-brand-card border border-brand-border rounded-lg shadow-md p-6 w-full max-w-md text-center animate-pulse"
+    >
+      <i class="fas fa-exclamation-triangle text-4xl mb-4 text-yellow-500"></i>
+      <h2 class="text-[15px] md:text-xl font-semibold mb-2 text-red-500">
+        Error: Lokasi telah dipindahkan
+      </h2>
+      <p class="text-[12px] md:text-sm text-gray-600">@ihsanbaihaqii</p>
+      <!-- sosmed: ig, wa, tt -->
+      <div class="flex justify-center space-x-4 mt-4">
+        <a
+          href="https://instagram.com/ihsanbaihaqii_"
+          target="_blank"
+          class="text-gray-600 hover:text-brand-primary"
+        >
+          <i class="fab fa-instagram text-xl"></i>
+        </a>
+        <a
+          href="https://wa.me/6285765198178?text=hallo"
+          target="_blank"
+          class="text-gray-600 hover:text-brand-primary"
+        >
+          <i class="fab fa-whatsapp text-xl"></i>
+        </a>
+        <a
+          href="https://tiktok.com/@ihsanbaihaqii_"
+          target="_blank"
+          class="text-gray-600 hover:text-brand-primary"
+        >
+          <i class="fab fa-tiktok text-xl"></i>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
