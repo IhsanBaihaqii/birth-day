@@ -21,9 +21,44 @@
     ["saentis"]: [
       { name: "Ihsan Baihaqi", hbd: "01,03,2006" },
       { name: "Fahriza Agustiawan", hbd: "28,08,2008" },
+      { name: "Ahmad Faris", hbd: "22,07,2015" },
     ],
   };
 
+  // ===================== CEK DATA =====================
+  // Jika data tidak ada, tampilkan pesan error
+  if (!RAW[getData]) {
+    const container = document.getElementById("cards");
+    const spotlightDesc = document.getElementById("spotlightDesc");
+    const soonestDesc = document.getElementById("soonestDesc");
+    const totalDesc = document.getElementById("totalDesc");
+
+    // Update stats
+    spotlightDesc.innerHTML = `<span class="text-slate-500 font-medium">⚠️ Data tidak ditemukan</span>`;
+    soonestDesc.innerHTML = `<span class="text-slate-500 font-medium">—</span>`;
+    totalDesc.innerHTML = `<span class="text-slate-500 font-medium">0 Teman</span>`;
+
+    // Tampilkan pesan error di container
+    container.innerHTML = `
+      <div class="col-span-full text-center py-16 bg-white border border-slate-200 rounded-3xl shadow-sm">
+        <span class="text-6xl block mb-4">🔍</span>
+        <h3 class="text-lg font-bold text-slate-800 mb-2">Data Tidak Ditemukan</h3>
+        <p class="text-sm text-slate-400 max-w-sm mx-auto">
+          Maaf, data untuk <strong>"${getData}"</strong> tidak tersedia. 
+          Silakan periksa kembali parameter URL Anda.
+        </p>
+        <div class="mt-4 text-xs text-slate-400">
+          <i class="fa-regular fa-circle-info"></i> Contoh: <code class="bg-slate-100 px-2 py-1 rounded">?data=24m11</code>
+        </div>
+      </div>
+    `;
+
+    // Sembunyikan search & filter
+    document.querySelector(".mb-6.flex").style.display = "none";
+    return; // Stop eksekusi
+  }
+
+  // ===================== LANJUTKAN KODE =====================
   const DAYS_ID = [
     "Minggu",
     "Senin",
@@ -268,7 +303,7 @@
       zodiac,
     };
   });
-  if (!people) return;
+
   // Spotlight widget filling
   const todayBDays = people.filter((p) => p.isToday);
   const spotlightCard = document.getElementById("spotlightCard");
@@ -291,6 +326,10 @@
     document.getElementById("soonestDesc").textContent =
       `Semua terdekat dirayakan hari ini!`;
   }
+
+  // Update total
+  document.getElementById("totalDesc").innerHTML =
+    `<span class="font-bold">${people.length}</span> Teman Terdaftar`;
 
   const container = document.getElementById("cards");
   let cardTimerMap = {};
@@ -339,14 +378,12 @@
             : "border-slate-200"
       }`;
 
-      // Inline staggered item animation delay
       card.style.animationDelay = `${idx * 60}ms`;
 
       const bdateStr = `${p.d} ${MONTHS_ID[p.m - 1]} ${p.y}`;
       const timerId = `timer-${idx}`;
 
       card.innerHTML = `
-              <!-- Decorative corner badge for highlight -->
               ${
                 p.isToday
                   ? `<div class="absolute -right-6 -top-6 w-14 h-14 bg-brand-gold flex items-end justify-center pb-2.5 rotate-45 select-none text-xs"><i class="fa-solid fa-award text-amber-950"></i></div>`
@@ -357,7 +394,6 @@
 
               <div class="flex items-start justify-between gap-3 mb-4">
                 <div class="flex items-center gap-3">
-                  <!-- Rank or Cake Badge -->
                   <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 border ${
                     p.isToday
                       ? "bg-brand-gold text-slate-900 border-amber-400 text-lg"
@@ -369,14 +405,12 @@
                   </div>
                   <div>
                     <h3 class="font-extrabold text-base text-slate-800 leading-tight">${p.name}</h3>
-                    <!-- Zodiak badge inline in card index -->
                     <span class="text-[11px] font-bold text-slate-400 flex items-center gap-1 mt-0.5">
                       <span class="text-brand-teal">${p.zodiac.sym}</span> ${p.zodiac.name}
                     </span>
                   </div>
                 </div>
 
-                <!-- Days Remaining Large Marker (on the right) -->
                 <div class="text-right shrink-0">
                   ${
                     p.isToday
@@ -387,13 +421,12 @@
                 </div>
               </div>
 
-              <!-- Meta dates information row layout -->
               <div class="space-y-2 mb-4">
-                <div class="flex items-center justify-between text-xs py-1.5 border-b border-dashed border-slate-100 dark:border-slate-50">
+                <div class="flex items-center justify-between text-xs py-1.5 border-b border-dashed border-slate-100">
                   <span class="text-slate-400 font-semibold"><i class="fa-solid fa-calendar text-slate-400 mr-1.5 w-3.5"></i> Tanggal Lahir</span>
                   <span class="text-slate-600 font-bold">${bdateStr}</span>
                 </div>
-                <div class="flex items-center justify-between text-xs py-1.5 border-b border-dashed border-slate-100 dark:border-slate-50">
+                <div class="flex items-center justify-between text-xs py-1.5 border-b border-dashed border-slate-100">
                   <span class="text-slate-400 font-semibold"><i class="fa-solid fa-hourglass-start text-slate-400 mr-1.5 w-3.5"></i> Usia Saat ini</span>
                   <span class="text-slate-600 font-extrabold">${p.isToday ? `<span class="text-brand-gold font-black">${p.age} Tahun</span>` : `${p.age} Tahun`}</span>
                 </div>
@@ -403,14 +436,10 @@
                 </div>
               </div>
 
-              <!-- Footer widgets (Live remaining tickers + progress indicators) -->
               <div>
-                <!-- LIVE SECONDS TIMER -->
                 <div class="text-[11px] font-semibold text-slate-500 mb-2 font-mono flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5" id="${timerId}">
-                  <!-- Ticker filled by script -->
                 </div>
 
-                <!-- Slim Progress Bar -->
                 <div class="relative w-full h-[6px] bg-slate-100 rounded-full overflow-hidden">
                   <div class="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${
                     p.isToday
@@ -530,7 +559,6 @@
         : "<i class='fa-solid fa-hourglass-half text-brand-primary'></i>";
     mName.textContent = p.name;
 
-    // Re-style headers with solid color themes
     mHeader.className =
       "px-6 pb-6 pt-5 text-center flex flex-col items-center border-b border-xs " +
       (p.isToday
@@ -597,19 +625,16 @@
     // Clear previous personality contents
     personalityDiv.innerHTML = "";
 
-    // Show default generate button state
     const newBtn = document.getElementById("aiGenerateBtn");
     newBtn.style.opacity = "1";
     newBtn.style.cursor = "pointer";
     newBtn.disabled = false;
 
-    // Re-attach fresh AI calculation click behavior (removing old triggers via cloning)
     const cleanBtn = newBtn.cloneNode(true);
     newBtn.parentNode.replaceChild(cleanBtn, newBtn);
 
     cleanBtn.addEventListener("click", () => handleAIPersonalityGeneration(p));
 
-    // Open overlay with elegant scale in transitions
     overlay.classList.remove("pointer-events-none", "opacity-0");
     overlay.classList.add("opacity-100");
     document
@@ -643,12 +668,11 @@
     modalInterval = setInterval(tickModal, 1000);
   }
 
-  // AI personality generator caller & animate sequentially
+  // AI personality generator dengan semua field baru
   async function handleAIPersonalityGeneration(p) {
     const aiBtn = document.getElementById("aiGenerateBtn");
     const aiResultArea = document.getElementById("aiResultArea");
 
-    // Visual loading state
     aiResultArea.innerHTML = `
             <div class="bg-indigo-50/50 border border-indigo-100 rounded-3xl p-6 text-center animate-pulse">
               <div class="text-brand-primary text-2xl mb-2 flex items-center justify-center gap-1.5">
@@ -721,97 +745,265 @@
     }
   }
 
-  // SEQUENTIAL REVEAL ANIMATOR (Title first, then sequential bullet points!)
+  // SEQUENTIAL REVEAL ANIMATOR dengan semua field baru
   function renderAISequentialResults(personality) {
     const aiResultArea = document.getElementById("aiResultArea");
-    aiResultArea.innerHTML = ""; // Clear loader
+    aiResultArea.innerHTML = "";
 
-    // Structure data with human-friendly translations, icons, and categories
+    // Semua section dari endpoint baru
     const sections = [
+      // Personality Archetype
+      {
+        title: "🏆 Personality Archetype",
+        content: personality.personality_archetype
+          ? `
+            <div class="font-bold text-slate-800">${personality.personality_archetype.nama || ""}</div>
+            <div class="text-sm text-slate-600 mt-1">${personality.personality_archetype.deskripsi || ""}</div>
+          `
+          : null,
+        icon: "fa-crown",
+        accent: "text-purple-600 bg-purple-50 border-purple-100",
+      },
+      // Aura
+      {
+        title: "✨ Aura",
+        content: personality.aura
+          ? `
+            <div class="font-bold text-slate-800">${personality.aura.tipe || ""}</div>
+            <div class="text-sm text-slate-600 mt-1">${personality.aura.deskripsi || ""}</div>
+            ${personality.aura.warna ? `<div class="text-xs text-slate-500 mt-1">🎨 ${personality.aura.warna}</div>` : ""}
+          `
+          : null,
+        icon: "fa-meteor",
+        accent: "text-amber-600 bg-amber-50 border-amber-100",
+      },
+      // Personality Score
+      {
+        title: "📊 Personality Score",
+        content: personality.personality_score
+          ? Object.entries(personality.personality_score)
+              .map(([key, value]) => {
+                const label = key
+                  .replace(/_/g, " ")
+                  .replace(/\b\w/g, (l) => l.toUpperCase());
+                const colors = {
+                  overthinking: "#f59e0b",
+                  bucin: "#ec4899",
+                  humor: "#8b5cf6",
+                  ambisi: "#ef4444",
+                  sensitif: "#f97316",
+                  spontan: "#06b6d4",
+                  loyal: "#10b981",
+                  main_character_energy: "#f43f5e",
+                };
+                const color = colors[key] || "#6366f1";
+                return `
+                  <div class="mb-2">
+                    <div class="flex justify-between text-xs">
+                      <span class="font-medium text-slate-600">${label}</span>
+                      <span class="font-bold text-slate-800">${value}%</span>
+                    </div>
+                    <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all" style="width: ${value}%; background: ${color}"></div>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("")
+          : null,
+        icon: "fa-chart-simple",
+        accent: "text-indigo-600 bg-indigo-50 border-indigo-100",
+      },
+      // Kepribadian Umum
       {
         title: "Kepribadian Umum",
         points: personality.kepribadian_umum?.points || [],
         vibes: personality.kepribadian_umum?.vibes,
         icon: "fa-brain",
         accent: "text-indigo-600 bg-indigo-50 border-indigo-100",
-        isVibeLabel: "🎵 Vibes Musik",
+        isVibeLabel: "🎵 Vibes",
       },
+      // First Impression
       {
-        title: "Aspek Percintaan & Relasi",
+        title: "👀 First Impression",
+        points: [
+          ...(personality.first_impression?.yang_orang_lihat || []).map(
+            (p) => `👤 Orang lihat: ${p}`,
+          ),
+          ...(personality.first_impression?.aslinya || []).map(
+            (p) => `💖 Aslinya: ${p}`,
+          ),
+        ],
+        icon: "fa-eye",
+        accent: "text-blue-600 bg-blue-50 border-blue-100",
+      },
+      // Green Flags
+      {
+        title: "✅ Green Flags",
+        points: personality.green_flags || [],
+        icon: "fa-circle-check",
+        accent: "text-emerald-600 bg-emerald-50 border-emerald-100",
+      },
+      // Red Flags
+      {
+        title: "⚠️ Red Flags",
+        points: personality.red_flags || [],
+        icon: "fa-circle-exclamation",
+        accent: "text-rose-600 bg-rose-50 border-rose-100",
+      },
+      // Percintaan
+      {
+        title: "💕 Percintaan",
         points: personality.percintaan?.points || [],
         vibes: personality.percintaan?.vibes,
         icon: "fa-heart",
-        accent: "text-rose-500 bg-rose-50 border-rose-100",
+        accent: "text-pink-600 bg-pink-50 border-pink-100",
         isVibeLabel: "💞 Aura Asmara",
       },
+      // Love Language
       {
-        title: "Karakter Positif Unggulan",
-        points: personality.sisi_positif || [],
+        title: "💌 Love Language",
+        points: [
+          ...(personality.love_language?.cara_menunjukkan || []).map(
+            (p) => `💝 ${p}`,
+          ),
+          ...(personality.love_language?.yang_dibutuhkan || []).map(
+            (p) => `🤗 ${p}`,
+          ),
+        ],
+        vibes: personality.love_language?.utama,
+        icon: "fa-language",
+        accent: "text-rose-600 bg-rose-50 border-rose-100",
+        isVibeLabel: "❤️ Utama",
+      },
+      // Crush Mode
+      {
+        title: "😍 Crush Mode",
+        points: [
+          ...(personality.crush_mode?.saat_mulai_suka || []).map(
+            (p) => `💫 ${p}`,
+          ),
+          ...(personality.crush_mode?.cara_mencari_perhatian || []).map(
+            (p) => `✨ ${p}`,
+          ),
+          ...(personality.crush_mode?.tanda_tanda || []).map((p) => `🔮 ${p}`),
+        ],
         icon: "fa-face-smile-beam",
-        accent: "text-emerald-600 bg-emerald-50 border-emerald-100",
-      },
-      {
-        title: "Karakter Negatif & Kelemahan",
-        points: personality.sisi_negatif || [],
-        icon: "fa-face-frown",
-        accent: "text-amber-600 bg-amber-50 border-amber-100",
-      },
-      {
-        title: "Kategori Kerentanan Karakter",
-        points: personality.kelemahan || [],
-        icon: "fa-triangle-exclamation",
-        accent: "text-red-500 bg-red-50 border-red-100",
-      },
-      {
-        title: "Saat Membuka Hati / Dekat dengan Orang",
-        points: personality.saat_dekat_dengan_orang || [],
-        icon: "fa-people-group",
-        accent: "text-blue-500 bg-blue-50 border-blue-105",
-      },
-      {
-        title: "Reaksi Saat Marah & Kecewa",
-        points: personality.saat_marah_dan_kecewa || [],
-        icon: "fa-fire-flame-curved",
-        accent: "text-orange-500 bg-orange-50 border-orange-100",
-      },
-      {
-        title: "Fakta Unik & Rahasia Kepribadian",
-        points: personality.fakta_unik?.points || [],
-        vibes: personality.fakta_unik?.first_impression,
-        icon: "fa-sparkles",
         accent: "text-purple-600 bg-purple-50 border-purple-100",
-        isVibeLabel: "👀 First Impression",
       },
+      // Relationship Mode
       {
-        title: "Social Battery",
+        title: "💑 Relationship Mode",
+        points: [
+          ...(personality.relationship_mode
+            ? [
+                `💪 Saat single: ${personality.relationship_mode.saat_single || ""}`,
+                `😊 Saat nyaman: ${personality.relationship_mode.saat_nyaman || ""}`,
+                `😤 Saat cemburu: ${personality.relationship_mode.saat_cemburu || ""}`,
+                `😢 Saat kecewa: ${personality.relationship_mode.saat_kecewa || ""}`,
+              ].filter((p) => !p.endsWith(":"))
+            : []),
+        ],
+        icon: "fa-ring",
+        accent: "text-indigo-600 bg-indigo-50 border-indigo-100",
+      },
+      // Saat Marah dan Kecewa
+      {
+        title: "😤 Saat Marah & Kecewa",
+        points: personality.saat_marah_dan_kecewa || [],
+        icon: "fa-face-angry",
+        accent: "text-red-600 bg-red-50 border-red-100",
+      },
+      // Social Battery
+      {
+        title: "🔋 Social Battery",
         points: [
           ...(personality.social_battery?.kebiasaan || []),
-          ...(personality.social_battery?.saat_lelah_sosial || []),
+          ...(personality.social_battery?.saat_lelah_sosial || []).map(
+            (p) => `🔄 ${p}`,
+          ),
         ],
         vibes: personality.social_battery?.tipe,
-        icon: "fa-battery-half",
+        icon: "fa-battery-three-quarters",
         accent: "text-cyan-600 bg-cyan-50 border-cyan-100",
-        isVibeLabel: "⚡ Tipe Energi Sosial",
+        isVibeLabel: "⚡ Tipe Energi",
       },
+      // Friendship Personality
       {
-        title: "Kebiasaan Random",
+        title: "🤝 Friendship Personality",
+        points: [
+          ...(personality.friendship_personality
+            ? [
+                `🎯 Tipe: ${personality.friendship_personality.tipe || ""}`,
+                ...(personality.friendship_personality.points || []),
+              ]
+            : []),
+        ],
+        icon: "fa-user-group",
+        accent: "text-emerald-600 bg-emerald-50 border-emerald-100",
+      },
+      // Chat Personality
+      {
+        title: "💬 Chat Personality",
+        points: [
+          ...(personality.chat_personality
+            ? [
+                `📝 Gaya: ${personality.chat_personality.gaya_chat || ""}`,
+                ...(personality.chat_personality.kebiasaan || []).map(
+                  (p) => `💭 ${p}`,
+                ),
+                ...(personality.chat_personality.saat_suka_seseorang || []).map(
+                  (p) => `😊 ${p}`,
+                ),
+                ...(personality.chat_personality.saat_tidak_tertarik || []).map(
+                  (p) => `😐 ${p}`,
+                ),
+              ].filter((p) => !p.endsWith(":"))
+            : []),
+        ],
+        icon: "fa-comment",
+        accent: "text-blue-600 bg-blue-50 border-blue-100",
+      },
+      // Social Media Personality
+      {
+        title: "📱 Social Media Personality",
+        points: [
+          ...(personality.social_media_personality
+            ? [
+                `🎯 Tipe: ${personality.social_media_personality.tipe || ""}`,
+                ...(personality.social_media_personality.kebiasaan || []).map(
+                  (p) => `📌 ${p}`,
+                ),
+              ]
+            : []),
+        ],
+        vibes: personality.social_media_personality?.vibes,
+        icon: "fa-share-nodes",
+        accent: "text-violet-600 bg-violet-50 border-violet-100",
+        isVibeLabel: "📱 Vibes",
+      },
+      // Kebiasaan Random
+      {
+        title: "🎲 Kebiasaan Random",
         points: personality.kebiasaan_random || [],
-        icon: "fa-wand-magic-sparkles",
+        icon: "fa-shuffle",
         accent: "text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100",
       },
+      // Anime Character Vibes
       {
-        title: "Anime Character Vibes",
+        title: "🎬 Anime Character Vibes",
         points: (personality.anime_character_vibes?.karakter || []).map(
           (k, i) => {
             const alasan = personality.anime_character_vibes?.alasan?.[i] || "";
             return `${k} — ${alasan}`;
           },
         ),
-        icon: "fa-dragon",
+        icon: "fa-tv",
         accent: "text-pink-600 bg-pink-50 border-pink-100",
       },
+      // Game Character Vibes
       {
-        title: "Game Character Vibes",
+        title: "🎮 Game Character Vibes",
         points: (personality.game_character_vibes?.karakter || []).map(
           (k, i) => {
             const alasan = personality.game_character_vibes?.alasan?.[i] || "";
@@ -819,39 +1011,73 @@
           },
         ),
         icon: "fa-gamepad",
-        accent: "text-violet-600 bg-violet-50 border-violet-100",
+        accent: "text-orange-600 bg-orange-50 border-orange-100",
       },
+      // Idol Vibes
       {
-        title: "Idol Vibes",
-        points: (personality.idol_vibes?.idol || []).map((k, i) => {
+        title: "⭐ Idol Vibes",
+        points: (personality.idol_vibes?.karakter || []).map((k, i) => {
           const alasan = personality.idol_vibes?.alasan?.[i] || "";
           return `${k} — ${alasan}`;
         }),
-        icon: "fa-microphone",
+        icon: "fa-star",
         accent: "text-rose-600 bg-rose-50 border-rose-100",
       },
+      // Cocok Dengan
       {
-        title: "Kecocokan Sinergi Zodiak",
+        title: "🤝 Cocok Dengan",
         points: personality.cocok_dengan?.zodiak || [],
-        alasan: personality.cocok_dengan?.alasan || [],
+        alasan: personality.cocok_dengan?.alasan,
         isCompatibility: true,
-        icon: "fa-circle-check",
+        icon: "fa-handshake",
         accent: "text-teal-600 bg-teal-50 border-teal-100",
       },
+      // Tidak Cocok Dengan
       {
-        title: "Kontradiksi / Rentan Konflik Zodiak",
+        title: "❌ Tidak Cocok Dengan",
         points: personality.tidak_cocok_dengan?.zodiak || [],
-        alasan: personality.tidak_cocok_dengan?.alasan || [],
+        alasan: personality.tidak_cocok_dengan?.alasan,
         isCompatibility: true,
-        icon: "fa-circle-xmark",
-        accent: "text-pink-600 bg-pink-50 border-pink-100",
+        icon: "fa-handshake-slash",
+        accent: "text-rose-600 bg-rose-50 border-rose-100",
+      },
+      // Roasting
+      {
+        title: "🔥 Roasting",
+        points: personality.roasting?.points || [],
+        icon: "fa-fire",
+        accent: "text-yellow-600 bg-yellow-50 border-yellow-100",
+      },
+      // Hidden Side
+      {
+        title: "🎭 Hidden Side",
+        points: personality.hidden_side || [],
+        icon: "fa-mask",
+        accent: "text-slate-600 bg-slate-50 border-slate-200",
+      },
+      // Personality Verdict
+      {
+        title: "🏅 Personality Verdict",
+        content: personality.personality_verdict
+          ? `
+            <div class="font-bold text-slate-800">${personality.personality_verdict.satu_kalimat || ""}</div>
+            ${personality.personality_verdict.quote ? `<div class="text-sm text-brand-teal font-medium italic mt-1">💫 ${personality.personality_verdict.quote}</div>` : ""}
+          `
+          : null,
+        icon: "fa-crown",
+        accent: "text-brand-primary bg-indigo-50 border-indigo-100",
       },
     ];
 
-    // FILTER out empty sections
-    const validSections = sections.filter((sec) => sec.points.length > 0);
+    // Filter section yang valid
+    const validSections = sections.filter(
+      (sec) =>
+        sec.content ||
+        sec.points?.length > 0 ||
+        (sec.vibes && sec.points?.length > 0),
+    );
 
-    // STEP 1: Render All Section containers immediately with HEADERS ONLY (no bullet points yet)
+    // Render section containers
     validSections.forEach((sec, idx) => {
       const sectionEl = document.createElement("div");
       sectionEl.className =
@@ -859,7 +1085,6 @@
       sectionEl.id = `ai-sec-${idx}`;
 
       sectionEl.innerHTML = `
-              <!-- Section Header (Rendered First - Clickable for Collapse) -->
               <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3 shrink-0 cursor-pointer group select-none" onclick="window.toggleSectionCollapse(${idx})">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm ${sec.accent}">
@@ -867,25 +1092,18 @@
                   </div>
                   <h4 class="font-extrabold text-[15px] sm:text-base text-slate-800">${sec.title}</h4>
                 </div>
-                <!-- Collapse indicator chevron -->
                 <div class="text-slate-400 group-hover:text-slate-600 transition-colors w-7 h-7 flex items-center justify-center rounded-full bg-slate-50 border border-slate-100" id="collapse-icon-${idx}">
                   <i class="fa-solid fa-chevron-up text-[10px]"></i>
                 </div>
               </div>
-              
-              <!-- Points container (Initially empty to sequential reveal) -->
-              <ul class="space-y-2.5" id="ai-points-${idx}">
-                <!-- Bullet items appends sequentially -->
-              </ul>
-              
-              <!-- Vibes container (Initially hidden) -->
+              <div class="space-y-2.5" id="ai-points-${idx}"></div>
               <div class="mt-4 pt-3 border-t border-dashed border-slate-100 hidden" id="ai-vibes-${idx}"></div>
             `;
 
       aiResultArea.appendChild(sectionEl);
     });
 
-    // STEP 2: Smoothly fade & slide up all section containers onto the screen in a fast waterfall
+    // Fade in sections
     validSections.forEach((sec, idx) => {
       setTimeout(() => {
         const el = document.getElementById(`ai-sec-${idx}`);
@@ -896,7 +1114,7 @@
       }, idx * 80);
     });
 
-    // STEP 3: Begin sequential injection of bullet items
+    // Sequential reveal points
     let currentSecIndex = 0;
 
     function startSequencing() {
@@ -908,61 +1126,74 @@
       );
       const vibesBox = document.getElementById(`ai-vibes-${currentSecIndex}`);
 
+      // Handle content (special for archetype, aura, verdict)
+      if (sec.content) {
+        const div = document.createElement("div");
+        div.className =
+          "text-xs sm:text-sm text-slate-600 transition-all duration-300 opacity-0 transform translate-x-4";
+        div.innerHTML = sec.content;
+        pointsList.appendChild(div);
+        requestAnimationFrame(() => {
+          div.classList.remove("opacity-0", "translate-x-4");
+          div.classList.add("opacity-100", "translate-x-0");
+        });
+
+        currentSecIndex++;
+        setTimeout(startSequencing, 200);
+        return;
+      }
+
       let pointIndex = 0;
 
       function injectNextPoint() {
         if (pointIndex < sec.points.length) {
-          // Instatiate bullet item
           const li = document.createElement("li");
 
           if (sec.isCompatibility) {
             const zodiacName = sec.points[pointIndex];
-            const zodiacAlasan =
-              sec.alasan && sec.alasan[pointIndex]
-                ? sec.alasan[pointIndex]
-                : "-";
-            const isConflict = sec.accent.includes("pink");
-            const accentColorClass = isConflict
-              ? "border-pink-500/30 text-pink-600 bg-pink-50/20"
-              : "border-teal-500/30 text-teal-600 bg-teal-50/20";
+            const isConflict = sec.accent.includes("rose");
             const iconClass = isConflict
-              ? "fa-solid fa-circle-xmark text-pink-500 text-xs"
-              : "fa-solid fa-circle-check text-brand-teal text-xs";
+              ? "fa-circle-xmark text-rose-500"
+              : "fa-circle-check text-brand-teal";
 
             li.className =
               "flex flex-col gap-1 w-full text-xs sm:text-sm text-slate-600 transition-all duration-300 opacity-0 transform translate-x-4 border-l-2 pl-3 py-2 bg-slate-50/50 rounded-r-xl " +
-              (isConflict ? "border-pink-500/30" : "border-teal-500/30");
+              (isConflict ? "border-rose-500/30" : "border-teal-500/30");
             li.innerHTML = `
                     <div class="font-extrabold text-slate-800 flex items-center gap-1.5">
-                      <i class="${iconClass}"></i>
+                      <i class="fa-solid ${iconClass} text-xs"></i>
                       <span>${zodiacName}</span>
                     </div>
-                    <div class="text-xs text-slate-500 font-medium leading-relaxed pl-5">${zodiacAlasan}</div>
+                    ${sec.alasan && typeof sec.alasan === "string" ? `<div class="text-xs text-slate-500 font-medium leading-relaxed pl-5">${sec.alasan}</div>` : ""}
                   `;
           } else {
+            const point = sec.points[pointIndex];
+            // Cek apakah point mengandung emoji di awal (untuk format khusus)
+            const hasEmoji = /^[🔮✨💫💝🤗💪😊😤😢🎯📝💭😊😐📌🔄]/.test(point);
+            const displayText = hasEmoji ? point : `✨ ${point}`;
+
             li.className =
               "flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 transition-all duration-300 opacity-0 transform translate-x-4";
             li.innerHTML = `
                     <span class="text-brand-teal shrink-0 mt-0.5"><i class="fa-solid fa-sparkles text-[10px]"></i></span>
-                    <span class="leading-relaxed font-semibold text-slate-700">${sec.points[pointIndex]}</span>
+                    <span class="leading-relaxed font-semibold text-slate-700">${displayText}</span>
                   `;
           }
 
           pointsList.appendChild(li);
 
-          // CSS trigger transition next frame
           requestAnimationFrame(() => {
             li.classList.remove("opacity-0", "translate-x-4");
             li.classList.add("opacity-100", "translate-x-0");
           });
 
           pointIndex++;
-          setTimeout(injectNextPoint, 150); // delay between distinct bullet points
+          setTimeout(injectNextPoint, 150);
         } else {
-          // Done on lists, reveal vibes under it if any
+          // Show vibes
           if (sec.vibes) {
             vibesBox.className =
-              "mt-4 pt-3 border-t border-dashed border-slate-100 text-xs text-brand-teal font-medium flex flex-col gap-2 animate-fade-in";
+              "mt-4 pt-3 border-t border-dashed border-slate-100 text-xs text-brand-teal font-medium flex flex-col gap-2";
             vibesBox.innerHTML = `
                     <span class="bg-teal-50 text-brand-teal px-2 py-0.5 rounded-md font-bold text-[10px] shrink-0 uppercase tracking-wider">${sec.isVibeLabel || "Review"}</span>
                     <span class="italic text-slate-500 font-medium">${sec.vibes}</span>
@@ -971,7 +1202,6 @@
             vibesBox.setAttribute("data-visible", "true");
           }
 
-          // Transition to rendering points for the next section title block
           currentSecIndex++;
           setTimeout(startSequencing, 150);
         }
@@ -980,7 +1210,6 @@
       injectNextPoint();
     }
 
-    // Trigger sequence right after the cards finish appearing on viewport
     setTimeout(startSequencing, validSections.length * 80 + 150);
   }
 
@@ -995,7 +1224,7 @@
     });
   }
 
-  // Section Collapse Toggle interaction handler
+  // Section Collapse Toggle
   window.toggleSectionCollapse = (idx) => {
     const pointsList = document.getElementById(`ai-points-${idx}`);
     const vibesBox = document.getElementById(`ai-vibes-${idx}`);
@@ -1092,7 +1321,7 @@
     if (e.target.id === "zodiacOverlay") closeZodiac();
   };
 
-  // Esc key handles both modals closure
+  // Esc key
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModalDirect();
